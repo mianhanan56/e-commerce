@@ -1,0 +1,157 @@
+@use "../../styles/tokens" as *;
+
+.root {
+  position: fixed;
+  inset: 0;
+  z-index: 70;
+  pointer-events: none;
+}
+
+.open {
+  pointer-events: auto;
+}
+
+.scrim {
+  position: absolute;
+  inset: 0;
+  background: rgba($ink, 0.45);
+  opacity: 0;
+  transition: opacity $dur $ease;
+
+  .open & {
+    opacity: 1;
+  }
+}
+
+.panel {
+  position: absolute;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  display: flex;
+  flex-direction: column;
+  width: min(100%, 28rem);
+  background: $paper;
+  transform: translateX(100%);
+  transition: transform 550ms $ease-out;
+
+  .open & {
+    transform: none;
+  }
+}
+
+.head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  height: $header-h;
+  padding-inline: $space-5;
+  border-bottom: 1px solid $line;
+}
+
+.title {
+  font-size: $text-lg;
+  font-weight: 500;
+
+  span {
+    font-family: $font-sans;
+    font-size: $text-sm;
+    color: $muted;
+  }
+}
+
+.close {
+  display: grid;
+  place-items: center;
+  width: 2.75rem;
+  height: 2.75rem;
+  margin-right: -0.6rem;
+  transition: color $dur-fast $ease;
+
+  @include hover {
+    &:hover {
+      color: $gold-deep;
+    }
+  }
+}
+
+.lines {
+  flex: 1;
+  overflow-y: auto;
+  padding-inline: $space-5;
+  overscroll-behavior: contain;
+}
+
+.foot {
+  padding: $space-5;
+  border-top: 1px solid $line;
+  background: $white;
+}
+
+.totals {
+  display: grid;
+  gap: $space-2;
+  margin: 0 0 $space-4;
+  font-size: $text-sm;
+
+  div {
+    display: flex;
+    justify-content: space-between;
+  }
+
+  dd {
+    margin: 0;
+  }
+}
+
+.savings {
+  color: $sale;
+}
+
+.subtotal {
+  padding-top: $space-3;
+  border-top: 1px solid $line;
+  font-weight: 500;
+  font-size: $text-base;
+}
+
+.note {
+  display: flex;
+  align-items: center;
+  gap: $space-2;
+  margin-bottom: $space-4;
+  font-size: $text-xs;
+  color: $muted;
+}
+
+.actions {
+  display: grid;
+  gap: $space-2;
+}
+
+.empty {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: $space-3;
+  padding: $space-7 $space-5;
+  text-align: center;
+}
+
+.emptyIcon {
+  color: $gold-deep;
+}
+
+.emptyTitle {
+  font-family: $font-serif;
+  font-size: $text-xl;
+}
+
+.emptyText {
+  max-width: 18rem;
+  margin-bottom: $space-4;
+  font-weight: 300;
+  color: $muted;
+}

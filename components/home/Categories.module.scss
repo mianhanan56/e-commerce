@@ -1,0 +1,167 @@
+@use "../../styles/tokens" as *;
+
+.section {
+  padding-block: $section-y;
+  overflow: hidden;
+}
+
+.inner {
+  @include container;
+}
+
+// Mobile: contained snap rail. Desktop: one feature tile + 2×2.
+.grid {
+  display: grid;
+  grid-auto-flow: column;
+  grid-auto-columns: 82%;
+  gap: $space-3;
+  overflow-x: auto;
+  scroll-snap-type: x mandatory;
+  scroll-padding-inline: $gutter;
+  padding-inline: $gutter;
+  scrollbar-width: none;
+
+  &::-webkit-scrollbar {
+    display: none;
+  }
+
+  @include up(md) {
+    grid-auto-columns: 46%;
+  }
+
+  @include up(lg) {
+    @include container;
+    grid-auto-flow: row;
+    grid-template-columns: 2fr 1fr 1fr;
+    grid-template-rows: repeat(2, minmax(20rem, 26rem));
+    gap: $space-4;
+    overflow: visible;
+  }
+}
+
+.cell {
+  scroll-snap-align: start;
+  aspect-ratio: 3 / 4;
+
+  @include up(lg) {
+    aspect-ratio: auto;
+
+    &:first-child {
+      grid-row: span 2;
+    }
+  }
+}
+
+.card {
+  position: relative;
+  display: flex;
+  align-items: flex-end;
+  height: 100%;
+  overflow: hidden;
+  background: $ink;
+  color: $white;
+
+  // Bottom scrim so type stays legible on bright photos.
+  &::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(
+      to top,
+      rgba($ink, 0.85) 0%,
+      rgba($ink, 0.15) 55%,
+      rgba($ink, 0) 100%
+    );
+    transition: opacity $dur $ease;
+  }
+}
+
+.image {
+  object-fit: cover;
+  transition:
+    transform 1.4s $ease-out,
+    filter $dur $ease;
+}
+
+.body {
+  position: relative;
+  z-index: 1;
+  display: flex;
+  flex-direction: column;
+  gap: $space-2;
+  width: 100%;
+  padding: $space-5;
+
+  @include up(md) {
+    padding: $space-6;
+  }
+}
+
+.index {
+  font-family: $font-serif;
+  font-style: italic;
+  color: $gold;
+}
+
+.name {
+  font-family: $font-serif;
+  font-size: $text-xl;
+  line-height: 1.05;
+}
+
+.desc {
+  max-width: 22rem;
+  font-size: $text-sm;
+  font-weight: 300;
+  color: rgba($white, 0.78);
+}
+
+.cta {
+  display: inline-flex;
+  align-items: center;
+  gap: $space-2;
+  margin-top: $space-3;
+  font-size: $text-xs;
+  font-weight: 500;
+  letter-spacing: $tracking-wide;
+  text-transform: uppercase;
+  color: $gold-light;
+
+  svg {
+    transition: transform $dur $ease-out;
+  }
+}
+
+@include hover {
+  .desc {
+    max-height: 0;
+    opacity: 0;
+    overflow: hidden;
+    transition:
+      max-height $dur $ease-out,
+      opacity $dur $ease;
+  }
+
+  .card:hover,
+  .card:focus-visible {
+    .image {
+      transform: scale(1.06);
+      filter: brightness(0.9);
+    }
+
+    .desc {
+      max-height: 4rem;
+      opacity: 1;
+    }
+
+    .cta svg {
+      transform: translateX(4px);
+    }
+  }
+}
+
+@include up(lg) {
+  .cell:first-child .name {
+    font-size: $text-2xl;
+  }
+}

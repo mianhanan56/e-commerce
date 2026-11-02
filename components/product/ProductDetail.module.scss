@@ -1,0 +1,318 @@
+@use "../../styles/tokens" as *;
+
+.layout {
+  display: grid;
+  gap: $space-7;
+
+  @include up(lg) {
+    grid-template-columns: minmax(0, 7fr) minmax(0, 5fr);
+    align-items: start;
+    gap: $space-9;
+  }
+}
+
+.media {
+  position: relative;
+  aspect-ratio: 4 / 5;
+  overflow: hidden;
+  background: $paper-deep;
+  margin-inline: calc(-1 * #{$gutter});
+
+  @include up(md) {
+    margin-inline: 0;
+  }
+
+  @include up(lg) {
+    position: sticky;
+    top: 6.5rem;
+  }
+}
+
+.image {
+  object-fit: cover;
+  transform-origin: var(--x, 50%) var(--y, 50%);
+  transition: transform $dur $ease-out;
+}
+
+@include hover {
+  .media {
+    cursor: zoom-in;
+  }
+
+  .media:hover .image {
+    transform: scale(1.8);
+  }
+}
+
+.badge {
+  position: absolute;
+  top: $space-4;
+  left: $space-4;
+  padding: 0.35rem 0.65rem;
+  background: $ink;
+  color: $gold-light;
+  font-size: 0.6875rem;
+  font-weight: 500;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  pointer-events: none;
+}
+
+.panel {
+  display: flex;
+  flex-direction: column;
+}
+
+.eyebrow {
+  @include eyebrow;
+  align-self: flex-start;
+  color: $gold-deep;
+  transition: color $dur-fast $ease;
+
+  @include hover {
+    &:hover {
+      color: $ink;
+    }
+  }
+}
+
+.name {
+  margin-top: $space-4;
+  font-size: $text-2xl;
+  font-weight: 300;
+}
+
+.line {
+  margin-top: $space-2;
+  font-size: $text-sm;
+  letter-spacing: 0.06em;
+  color: $muted;
+}
+
+.price {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  gap: $space-3;
+  margin-top: $space-6;
+  font-size: $text-lg;
+  font-weight: 500;
+  letter-spacing: 0.02em;
+}
+
+.sale {
+  color: $sale;
+}
+
+.was {
+  font-size: $text-sm;
+  font-weight: 400;
+  color: $muted;
+}
+
+.note {
+  margin-top: $space-1;
+  font-size: $text-xs;
+  color: $muted;
+}
+
+.description {
+  margin-top: $space-6;
+  padding-top: $space-6;
+  border-top: 1px solid $line;
+  font-weight: 300;
+  color: $ink-soft;
+}
+
+.buy {
+  display: grid;
+  grid-template-columns: auto 1fr auto;
+  gap: $space-2;
+  margin-top: $space-7;
+}
+
+.stepper {
+  display: flex;
+  align-items: center;
+  border: 1px solid $line;
+
+  button {
+    display: grid;
+    place-items: center;
+    width: 2.75rem;
+    height: 100%;
+    min-height: 3.25rem;
+    transition: color $dur-fast $ease;
+
+    &:disabled {
+      color: $line;
+      cursor: not-allowed;
+    }
+  }
+
+  output {
+    min-width: 1.75rem;
+    text-align: center;
+    font-weight: 500;
+  }
+}
+
+.add {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: $space-2;
+  min-height: 3.25rem;
+  padding: 0 $space-5;
+  background: $ink;
+  color: $paper;
+  font-size: $text-xs;
+  font-weight: 500;
+  letter-spacing: $tracking-wide;
+  text-transform: uppercase;
+  transition:
+    background-color $dur $ease,
+    color $dur $ease;
+
+  @include hover {
+    &:hover {
+      background: $gold;
+      color: $ink;
+    }
+  }
+}
+
+.wish {
+  display: grid;
+  place-items: center;
+  width: 3.25rem;
+  border: 1px solid $line;
+  transition:
+    color $dur-fast $ease,
+    border-color $dur-fast $ease;
+
+  @include hover {
+    &:hover {
+      border-color: $ink;
+    }
+  }
+}
+
+.wishOn {
+  color: $sale;
+
+  svg {
+    fill: currentColor;
+  }
+}
+
+.assurances {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: $space-5 $space-4;
+  margin-top: $space-7;
+  padding: $space-5;
+  background: $paper-deep;
+
+  li {
+    display: flex;
+    gap: $space-3;
+    font-size: $text-xs;
+    color: $muted;
+  }
+
+  strong {
+    display: block;
+    font-size: $text-sm;
+    font-weight: 500;
+    color: $ink;
+  }
+}
+
+.assuranceIcon {
+  flex-shrink: 0;
+  color: $gold-deep;
+}
+
+.subhead {
+  @include eyebrow;
+  margin-bottom: $space-4;
+  color: $ink;
+}
+
+.specs {
+  margin-top: $space-7;
+
+  dl {
+    margin: 0;
+    border-top: 1px solid $line;
+  }
+
+  div {
+    display: grid;
+    grid-template-columns: 9rem 1fr;
+    gap: $space-4;
+    padding-block: $space-3;
+    border-bottom: 1px solid $line;
+    font-size: $text-sm;
+  }
+
+  dt {
+    color: $muted;
+  }
+
+  dd {
+    margin: 0;
+  }
+}
+
+.accordion {
+  margin-top: $space-6;
+
+  details {
+    border-bottom: 1px solid $line;
+  }
+
+  summary {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    min-height: 3.5rem;
+    font-size: $text-xs;
+    font-weight: 500;
+    letter-spacing: $tracking-wide;
+    text-transform: uppercase;
+    cursor: pointer;
+    list-style: none;
+
+    &::-webkit-details-marker {
+      display: none;
+    }
+
+    svg {
+      transition: transform $dur $ease-out;
+    }
+  }
+
+  details[open] summary svg {
+    transform: rotate(180deg);
+  }
+
+  p {
+    padding-bottom: $space-5;
+    font-size: $text-sm;
+    font-weight: 300;
+    color: $muted;
+  }
+
+  a {
+    color: $ink;
+    text-decoration: underline;
+    text-decoration-color: $gold;
+    text-underline-offset: 0.25em;
+  }
+}
+
+.srOnly {
+  @include visually-hidden;
+}

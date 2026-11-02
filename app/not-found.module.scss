@@ -1,0 +1,53 @@
+@use "../styles/tokens" as *;
+
+.section {
+  @include container;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding-block: $section-y;
+  text-align: center;
+}
+
+.code {
+  font-family: $font-serif;
+  font-size: clamp(6rem, 3rem + 14vw, 12rem);
+  font-weight: 300;
+  font-style: italic;
+  line-height: 0.9;
+  color: $gold-light;
+}
+
+.eyebrow {
+  @include eyebrow;
+  margin: $space-5 0 $space-4;
+  color: $gold-deep;
+}
+
+.title {
+  font-size: $text-2xl;
+  font-weight: 300;
+
+  em {
+    font-style: italic;
+    color: $gold-deep;
+  }
+}
+
+.text {
+  max-width: 28rem;
+  margin: $space-5 0 $space-7;
+  font-size: $text-md;
+  font-weight: 300;
+  color: $muted;
+}
+
+.ctas {
+  display: flex;
+  flex-direction: column;
+  gap: $space-3;
+
+  @include up(sm) {
+    flex-direction: row;
+  }
+}

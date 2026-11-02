@@ -1,0 +1,5 @@
+@use "../../styles/tokens" as *;
+
+.grid {
+  padding-block: $space-7 $section-y;
+}

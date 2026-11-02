@@ -1,0 +1,118 @@
+@use "../../styles/tokens" as *;
+
+// Shared form styling for checkout, contact and order tracking.
+
+.form {
+  display: grid;
+  gap: $space-5;
+}
+
+.row {
+  display: grid;
+  gap: $space-5;
+
+  @include up(md) {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+.field {
+  display: grid;
+  gap: $space-2;
+}
+
+.label {
+  font-size: $text-xs;
+  font-weight: 500;
+  letter-spacing: $tracking-wide;
+  text-transform: uppercase;
+  color: $muted;
+}
+
+.input,
+.select,
+.textarea {
+  width: 100%;
+  min-height: 3.25rem;
+  padding: 0 $space-4;
+  background: $white;
+  border: 1px solid $line;
+  border-radius: 0;
+  color: $ink;
+  font: inherit;
+  transition: border-color $dur-fast $ease;
+  appearance: none;
+
+  &::placeholder {
+    color: rgba($muted, 0.7);
+  }
+
+  &:focus,
+  &:focus-visible {
+    outline: none;
+    border-color: $gold;
+  }
+
+  &[aria-invalid="true"] {
+    border-color: $sale;
+  }
+}
+
+.select {
+  padding-right: $space-7;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 24 24' fill='none' stroke='%230d0d0c' stroke-width='1.25'%3E%3Cpath d='m6.5 9.5 5.5 5.5 5.5-5.5'/%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: right $space-4 center;
+}
+
+.textarea {
+  min-height: 9rem;
+  padding: $space-4;
+  resize: vertical;
+}
+
+.hint {
+  font-size: $text-xs;
+  color: $muted;
+}
+
+.error {
+  font-size: $text-xs;
+  color: $sale;
+}
+
+.choice {
+  display: flex;
+  align-items: flex-start;
+  gap: $space-3;
+  padding: $space-4 $space-5;
+  border: 1px solid $line;
+  background: $white;
+  cursor: pointer;
+  transition: border-color $dur-fast $ease;
+
+  &:has(input:checked) {
+    border-color: $ink;
+  }
+
+  input {
+    margin-top: 0.3rem;
+    accent-color: $ink;
+  }
+}
+
+.choiceTitle {
+  display: block;
+  font-weight: 500;
+}
+
+.choiceText {
+  display: block;
+  font-size: $text-sm;
+  font-weight: 300;
+  color: $muted;
+}
+
+.srOnly {
+  @include visually-hidden;
+}

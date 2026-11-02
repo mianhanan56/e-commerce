@@ -1,0 +1,30 @@
+@use "../../styles/tokens" as *;
+
+.empty {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: $space-3;
+  padding: $space-9 0;
+  text-align: center;
+}
+
+.icon {
+  color: $gold-deep;
+}
+
+.title {
+  font-size: $text-xl;
+  font-weight: 400;
+}
+
+.text {
+  max-width: 24rem;
+  margin-bottom: $space-4;
+  font-weight: 300;
+  color: $muted;
+}
+
+.loading {
+  min-height: 24rem;
+}

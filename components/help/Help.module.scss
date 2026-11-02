@@ -1,0 +1,223 @@
+@use "../../styles/tokens" as *;
+
+.layout {
+  @include container;
+  display: grid;
+  gap: $space-7;
+  padding-block: $space-7 $section-y;
+
+  @include up(lg) {
+    grid-template-columns: 16rem minmax(0, 1fr);
+    gap: $space-9;
+    padding-block: $space-8 $section-y;
+  }
+}
+
+.nav {
+  @include up(lg) {
+    position: sticky;
+    top: calc(5.25rem + #{$space-6});
+    align-self: start;
+  }
+
+  ul {
+    display: flex;
+    gap: $space-2;
+    overflow-x: auto;
+    margin-inline: calc(-1 * #{$gutter});
+    padding-inline: $gutter;
+    scrollbar-width: none;
+
+    &::-webkit-scrollbar {
+      display: none;
+    }
+
+    @include up(lg) {
+      flex-direction: column;
+      gap: 0;
+      margin: 0;
+      padding: 0;
+      overflow: visible;
+      border-top: 1px solid $line;
+    }
+  }
+}
+
+.navLink {
+  display: block;
+  padding: $space-2 $space-4;
+  border: 1px solid $line;
+  font-size: $text-sm;
+  white-space: nowrap;
+  color: $muted;
+  transition:
+    color $dur-fast $ease,
+    border-color $dur-fast $ease;
+
+  @include up(lg) {
+    padding: $space-4 0;
+    border: 0;
+    border-bottom: 1px solid $line;
+  }
+
+  @include hover {
+    &:hover {
+      color: $ink;
+    }
+  }
+}
+
+.active {
+  border-color: $ink;
+  color: $ink;
+  font-weight: 500;
+
+  @include up(lg) {
+    border-color: $line;
+    box-shadow: inset 2px 0 0 $gold;
+    padding-left: $space-4;
+  }
+}
+
+.help {
+  display: none;
+
+  @include up(lg) {
+    display: grid;
+    gap: $space-1;
+    margin-top: $space-6;
+    font-size: $text-sm;
+    color: $muted;
+
+    a {
+      color: $gold-deep;
+      text-decoration: underline;
+      text-underline-offset: 3px;
+    }
+  }
+}
+
+.content {
+  max-width: 46rem;
+}
+
+.updated {
+  @include eyebrow;
+  margin-bottom: $space-6;
+  color: $muted;
+}
+
+.h {
+  margin: $space-7 0 $space-4;
+  font-size: $text-xl;
+
+  &:first-child,
+  .updated + & {
+    margin-top: 0;
+  }
+}
+
+.p {
+  margin-bottom: $space-4;
+  font-weight: 300;
+  color: $ink-soft;
+}
+
+.list {
+  display: grid;
+  gap: $space-3;
+  margin-bottom: $space-4;
+
+  li {
+    position: relative;
+    padding-left: $space-5;
+    font-weight: 300;
+    color: $ink-soft;
+
+    &::before {
+      content: "";
+      position: absolute;
+      left: 0;
+      top: 0.75em;
+      width: 0.6rem;
+      height: 1px;
+      background: $gold;
+    }
+  }
+}
+
+.tableWrap {
+  margin-bottom: $space-5;
+  overflow-x: auto;
+}
+
+.table {
+  width: 100%;
+  min-width: 32rem;
+  border-collapse: collapse;
+  font-size: $text-sm;
+
+  th,
+  td {
+    padding: $space-4 $space-4 $space-4 0;
+    border-bottom: 1px solid $line;
+    text-align: left;
+    vertical-align: top;
+  }
+
+  thead th {
+    @include eyebrow;
+    color: $gold-deep;
+    border-bottom-color: $ink;
+  }
+
+  tbody th {
+    font-weight: 500;
+  }
+
+  td {
+    font-weight: 300;
+    color: $ink-soft;
+  }
+}
+
+.faq {
+  border-top: 1px solid $line;
+}
+
+.faqItem {
+  border-bottom: 1px solid $line;
+
+  summary {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: $space-5;
+    padding-block: $space-5;
+    font-family: $font-serif;
+    font-size: $text-lg;
+    cursor: pointer;
+    list-style: none;
+
+    &::-webkit-details-marker {
+      display: none;
+    }
+  }
+
+  p {
+    max-width: 40rem;
+    padding-bottom: $space-5;
+    font-weight: 300;
+    color: $muted;
+  }
+
+  &[open] .faqIcon {
+    transform: rotate(45deg);
+  }
+}
+
+.faqIcon {
+  flex-shrink: 0;
+  color: $gold-deep;
+  transition: transform $dur $ease-out;
+}

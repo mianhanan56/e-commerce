@@ -1,0 +1,224 @@
+@use "../../styles/tokens" as *;
+
+.root {
+  position: fixed;
+  inset: 0;
+  z-index: 70;
+  pointer-events: none;
+}
+
+.open {
+  pointer-events: auto;
+}
+
+.scrim {
+  position: absolute;
+  inset: 0;
+  background: rgba($ink, 0.45);
+  opacity: 0;
+  transition: opacity $dur $ease;
+
+  .open & {
+    opacity: 1;
+  }
+}
+
+.panel {
+  position: relative;
+  max-height: 100dvh;
+  overflow-y: auto;
+  background: $paper;
+  transform: translateY(-100%);
+  transition: transform 550ms $ease-out;
+
+  .open & {
+    transform: none;
+  }
+}
+
+.inner {
+  @include container;
+  max-width: 64rem;
+  padding-block: $space-5 $space-7;
+}
+
+.form {
+  display: flex;
+  align-items: center;
+  gap: $space-3;
+  border-bottom: 1px solid $ink;
+}
+
+.formIcon {
+  flex-shrink: 0;
+  color: $gold-deep;
+}
+
+.input {
+  flex: 1;
+  min-width: 0;
+  min-height: 4rem;
+  background: transparent;
+  border: 0;
+  font-family: $font-serif;
+  font-size: $text-xl;
+
+  // The form's underline is the focus indicator.
+  &:focus-visible {
+    outline: none;
+  }
+
+  &::placeholder {
+    color: rgba($muted, 0.6);
+  }
+
+  &::-webkit-search-cancel-button {
+    display: none;
+  }
+}
+
+.close {
+  display: grid;
+  place-items: center;
+  width: 2.75rem;
+  height: 2.75rem;
+  flex-shrink: 0;
+  transition: color $dur-fast $ease;
+
+  @include hover {
+    &:hover {
+      color: $gold-deep;
+    }
+  }
+}
+
+.idle {
+  display: grid;
+  gap: $space-6;
+  margin-top: $space-6;
+
+  @include up(md) {
+    grid-template-columns: 1fr 1fr;
+  }
+}
+
+.label {
+  @include eyebrow;
+  margin: $space-6 0 $space-4;
+  color: $gold-deep;
+
+  .idle & {
+    margin-top: 0;
+  }
+}
+
+.chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: $space-2;
+}
+
+.chip {
+  display: inline-flex;
+  align-items: center;
+  min-height: 2.5rem;
+  padding: 0 $space-4;
+  border: 1px solid $line;
+  font-size: $text-sm;
+  transition:
+    border-color $dur-fast $ease,
+    background-color $dur-fast $ease;
+
+  @include hover {
+    &:hover {
+      border-color: $ink;
+      background: $white;
+    }
+  }
+}
+
+.results {
+  display: grid;
+  gap: $space-2;
+
+  @include up(md) {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: $space-3 $space-6;
+  }
+}
+
+.result {
+  display: grid;
+  grid-template-columns: 4.5rem 1fr;
+  align-items: center;
+  gap: $space-4;
+  padding: $space-2;
+  transition: background-color $dur-fast $ease;
+
+  @include hover {
+    &:hover {
+      background: $white;
+    }
+  }
+}
+
+.thumb {
+  position: relative;
+  display: block;
+  aspect-ratio: 1;
+  overflow: hidden;
+  background: $paper-deep;
+}
+
+.image {
+  object-fit: cover;
+}
+
+.name {
+  display: block;
+  font-family: $font-serif;
+  font-size: $text-lg;
+  line-height: 1.2;
+}
+
+.meta,
+.price {
+  display: block;
+  font-size: $text-xs;
+  color: $muted;
+}
+
+.price {
+  margin-top: $space-1;
+  color: $ink;
+  font-weight: 500;
+}
+
+.all {
+  display: inline-flex;
+  align-items: center;
+  gap: $space-2;
+  margin-top: $space-6;
+  font-size: $text-xs;
+  font-weight: 500;
+  letter-spacing: $tracking-wide;
+  text-transform: uppercase;
+  border-bottom: 1px solid currentColor;
+  padding-bottom: $space-1;
+}
+
+.none {
+  margin-top: $space-6;
+  font-weight: 300;
+  color: $muted;
+
+  em {
+    font-family: $font-serif;
+    font-size: 1.1em;
+    color: $ink;
+  }
+}
+
+.srOnly {
+  @include visually-hidden;
+}

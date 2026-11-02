@@ -1,0 +1,37 @@
+@use "../../styles/tokens" as *;
+
+.section {
+  padding-block: $section-y;
+}
+
+.inner {
+  @include container;
+}
+
+.grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: $space-7 $space-3;
+
+  @include up(md) {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: $space-8 $space-5;
+  }
+
+  @include up(lg) {
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+  }
+}
+
+// Eight products: on the three-column layout, hide the last two so rows stay full.
+@media (min-width: 768px) and (max-width: 1023.98px) {
+  .grid > :nth-child(n + 7) {
+    display: none;
+  }
+}
+
+.more {
+  display: flex;
+  justify-content: center;
+  margin-top: $space-8;
+}

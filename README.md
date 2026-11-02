@@ -1,36 +1,48 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# WAQT — Men's Watches
 
-## Getting Started
+Design-phase frontend for a men's watch store in Pakistan. No backend, auth, Supabase or
+APIs yet: cart, wishlist and orders are client state persisted to `localStorage`
+(`lib/persisted.ts`), so they survive reloads but live only in the visitor's browser.
 
-First, run the development server:
+## Routes
+
+| Route                                 | What it is                                                                               |
+| ------------------------------------- | ---------------------------------------------------------------------------------------- |
+| `/`                                   | Homepage                                                                                 |
+| `/shop`                               | All watches — filters via `?category=`, `?q=`, `?sort=`, `?filter=new\|sale\|bestseller` |
+| `/collections`, `/collections/[slug]` | Collection index and per-category pages                                                  |
+| `/products/[id]`                      | Product detail                                                                           |
+| `/cart`, `/checkout`                  | Bag and checkout (cash on delivery / bank transfer)                                      |
+| `/wishlist`                           | Saved watches                                                                            |
+| `/track-order`                        | Order status lookup (orders placed in this browser)                                      |
+| `/about`, `/contact`                  | Brand story, contact form                                                                |
+| `/help/[slug]`                        | shipping, returns, warranty, size-guide, faq, privacy, terms                             |
+
+Header search opens an overlay with live results; the bag icon opens a cart drawer.
 
 ```bash
 npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+## Structure
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+- `styles/_tokens.scss` — colour palette, type scale, spacing, breakpoints, mixins
+- `components/ui` — Button, Icon, Reveal (scroll animation), SectionHeading
+- `components/ui` also has PageHeader (+ breadcrumbs), Container, EmptyState, Form styles
+- `components/layout` — AnnouncementBar, Header (+ mobile drawer), Footer, Wordmark
+- `components/home` — one component per homepage section
+- `components/cart` — cart + wishlist context and views; `components/orders` — placed orders
+- `components/{product,shop,search,checkout,about,contact,help,track}` — page features
+- `data/catalog.ts` — 15 placeholder products (PKR) and 5 categories
+- `data/help.ts` — help centre and policy copy
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+## Design system
 
-## Learn More
+- Colour: ink `#0d0d0c`, paper `#f7f4ee`, champagne gold `#b8996a` (light `#dcc8a3`)
+- Type: Cormorant Garamond (headings) + Jost (body), fluid `clamp()` scale
+- Spacing: 4px base, `$space-1`…`$space-10`; section padding `$section-y`
+- Breakpoints: 480 / 768 / 1024 / 1280 / 1440, mobile first
 
-To learn more about Next.js, take a look at the following resources:
-
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
-
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
-
-## Deploy on Vercel
-
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+Photos in `public/images` are Unsplash placeholders, and the social links, phone number and
+`waqt.pk` domain are placeholders too. Several show real brand logos
+(Rolex, MVMT, Fossil) — replace them with your own product photography before launch.

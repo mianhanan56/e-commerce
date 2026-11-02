@@ -1,0 +1,159 @@
+@use "../../styles/tokens" as *;
+
+.main {
+  @include container;
+  display: grid;
+  gap: $space-7;
+  padding-block: $space-7 $section-y;
+
+  @include up(lg) {
+    grid-template-columns: 5fr 7fr;
+    align-items: start;
+    gap: $space-9;
+    padding-block: $space-8 $section-y;
+  }
+}
+
+.channels {
+  border-top: 1px solid $line;
+}
+
+.channel {
+  display: grid;
+  grid-template-columns: 2.5rem 1fr;
+  gap: $space-3;
+  padding-block: $space-5;
+  border-bottom: 1px solid $line;
+}
+
+.channelIcon {
+  margin-top: 0.15rem;
+  color: $gold-deep;
+}
+
+.channelLabel {
+  @include eyebrow;
+  margin-bottom: $space-1;
+  color: $muted;
+}
+
+.channelValue {
+  font-family: $font-serif;
+  font-size: $text-lg;
+  line-height: 1.3;
+}
+
+a.channelValue {
+  transition: color $dur-fast $ease;
+
+  @include hover {
+    &:hover {
+      color: $gold-deep;
+    }
+  }
+}
+
+.channelNote {
+  margin-top: $space-1;
+  font-size: $text-sm;
+  font-weight: 300;
+  color: $muted;
+}
+
+.formCard {
+  padding: $space-6 $space-5;
+  background: $paper-deep;
+
+  @include up(md) {
+    padding: $space-8 $space-7;
+  }
+}
+
+.formTitle {
+  font-size: $text-xl;
+}
+
+.formIntro {
+  margin: $space-2 0 $space-6;
+  font-weight: 300;
+  color: $muted;
+}
+
+.thanks {
+  display: grid;
+  justify-items: start;
+  gap: $space-4;
+  padding-block: $space-5;
+}
+
+.thanksIcon {
+  color: $gold-deep;
+}
+
+.thanksTitle {
+  font-family: $font-serif;
+  font-size: $text-xl;
+  font-style: italic;
+}
+
+.thanksText {
+  max-width: 28rem;
+  margin-bottom: $space-3;
+  font-weight: 300;
+  color: $muted;
+}
+
+.faq {
+  padding-block: $section-y;
+  border-top: 1px solid $line;
+}
+
+.faqInner {
+  @include container;
+  display: grid;
+  gap: $space-6;
+
+  @include up(lg) {
+    grid-template-columns: 5fr 7fr;
+    gap: $space-9;
+  }
+}
+
+.eyebrow {
+  @include eyebrow;
+  margin-bottom: $space-4;
+  color: $gold-deep;
+}
+
+.faqTitle {
+  font-size: $text-2xl;
+  font-weight: 300;
+
+  em {
+    font-style: italic;
+    color: $gold-deep;
+  }
+}
+
+.faqLink {
+  display: inline-flex;
+  align-items: center;
+  gap: $space-2;
+  margin-top: $space-5;
+  font-size: $text-xs;
+  font-weight: 500;
+  letter-spacing: $tracking-wide;
+  text-transform: uppercase;
+  border-bottom: 1px solid currentColor;
+  padding-bottom: $space-1;
+
+  svg {
+    transition: transform $dur $ease-out;
+  }
+
+  @include hover {
+    &:hover svg {
+      transform: translateX(4px);
+    }
+  }
+}

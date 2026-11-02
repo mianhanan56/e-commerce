@@ -1,0 +1,67 @@
+@use "../../styles/tokens" as *;
+
+.heading {
+  display: grid;
+  gap: $space-5;
+  margin-bottom: $space-7;
+
+  @include up(md) {
+    margin-bottom: $space-8;
+  }
+}
+
+.split {
+  @include up(lg) {
+    grid-template-columns: 1.15fr 1fr;
+    align-items: end;
+    gap: $space-8;
+  }
+}
+
+.center {
+  justify-items: center;
+  text-align: center;
+
+  .intro {
+    max-width: 34rem;
+  }
+}
+
+.eyebrow {
+  @include eyebrow;
+  margin-bottom: $space-4;
+  color: $gold-deep;
+}
+
+.title {
+  font-size: $text-2xl;
+
+  em {
+    font-style: italic;
+    color: $gold-deep;
+  }
+}
+
+.intro {
+  max-width: 30rem;
+  font-size: $text-md;
+  font-weight: 300;
+  color: $muted;
+
+  @include up(lg) {
+    justify-self: end;
+  }
+}
+
+.light {
+  color: $white;
+
+  .eyebrow,
+  .title em {
+    color: $gold;
+  }
+
+  .intro {
+    color: $muted-on-ink;
+  }
+}

@@ -1,0 +1,129 @@
+@use "../../styles/tokens" as *;
+
+.footer {
+  background: #080807;
+  color: $white;
+}
+
+.inner {
+  @include container;
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: $space-7 $space-5;
+  padding-block: $space-8 $space-7;
+
+  @include up(lg) {
+    grid-template-columns: 1.6fr 1fr 1fr 1.1fr;
+    gap: $space-7;
+    padding-block: $space-9 $space-8;
+  }
+}
+
+.brand {
+  grid-column: 1 / -1;
+
+  @include up(lg) {
+    grid-column: auto;
+  }
+}
+
+.about {
+  max-width: 22rem;
+  margin: $space-5 0 $space-6;
+  font-weight: 300;
+  color: $muted-on-ink;
+}
+
+.socials {
+  display: flex;
+  gap: $space-2;
+  margin-left: -0.6rem;
+}
+
+.social {
+  display: grid;
+  place-items: center;
+  width: 2.75rem;
+  height: 2.75rem;
+  color: $gold-light;
+  transition: color $dur-fast $ease;
+
+  @include hover {
+    &:hover {
+      color: $white;
+    }
+  }
+}
+
+.heading {
+  margin-bottom: $space-5;
+  font-family: $font-sans;
+  font-size: $text-xs;
+  font-weight: 500;
+  letter-spacing: $tracking-wider;
+  text-transform: uppercase;
+  color: $gold;
+}
+
+.col ul {
+  display: grid;
+  gap: $space-2;
+}
+
+.link {
+  display: inline-block;
+  padding-block: 0.2rem;
+  font-size: $text-sm;
+  color: rgba($white, 0.82);
+  transition: color $dur-fast $ease;
+
+  @include hover {
+    &:hover {
+      color: $gold-light;
+    }
+  }
+}
+
+.contact {
+  display: grid;
+  gap: $space-2;
+  font-size: $text-sm;
+  font-style: normal;
+  color: rgba($white, 0.82);
+}
+
+.hours {
+  color: $muted-on-ink;
+}
+
+.bottom {
+  @include container;
+  display: flex;
+  flex-direction: column;
+  gap: $space-3;
+  padding-block: $space-5;
+  border-top: 1px solid $line-on-ink;
+  font-size: $text-sm;
+  color: $muted-on-ink;
+
+  @include up(md) {
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: center;
+  }
+}
+
+.legal {
+  display: flex;
+  gap: $space-5;
+
+  a {
+    transition: color $dur-fast $ease;
+
+    @include hover {
+      &:hover {
+        color: $white;
+      }
+    }
+  }
+}

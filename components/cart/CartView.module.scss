@@ -1,0 +1,82 @@
+@use "../../styles/tokens" as *;
+
+.layout {
+  display: grid;
+  gap: $space-8;
+  padding-block: $space-6 $section-y;
+
+  @include up(lg) {
+    grid-template-columns: minmax(0, 1fr) 24rem;
+    align-items: start;
+    gap: $space-9;
+  }
+}
+
+.lines {
+  border-top: 1px solid $line;
+}
+
+.lineActions {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: $space-4;
+  margin-top: $space-6;
+}
+
+.clear {
+  display: inline-flex;
+  align-items: center;
+  gap: $space-2;
+  font-size: $text-xs;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: $muted;
+  transition: color $dur-fast $ease;
+
+  @include hover {
+    &:hover {
+      color: $sale;
+    }
+  }
+}
+
+.summary {
+  display: grid;
+  gap: $space-5;
+  padding: $space-6;
+  background: $white;
+  border: 1px solid $line;
+
+  @include up(lg) {
+    position: sticky;
+    top: calc(5.25rem + #{$space-5});
+  }
+}
+
+.summaryTitle {
+  font-size: $text-lg;
+  font-weight: 500;
+}
+
+.assurances {
+  display: grid;
+  gap: $space-3;
+  padding-top: $space-5;
+  border-top: 1px solid $line;
+  font-size: $text-sm;
+  font-weight: 300;
+  color: $muted;
+
+  li {
+    display: flex;
+    align-items: center;
+    gap: $space-3;
+  }
+
+  svg {
+    flex-shrink: 0;
+    color: $gold-deep;
+  }
+}

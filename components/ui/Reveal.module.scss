@@ -1,0 +1,27 @@
+@use "../../styles/tokens" as *;
+
+.reveal {
+  opacity: 0;
+  transform: translateY(28px);
+  transition:
+    opacity $dur-slow $ease-out,
+    transform $dur-slow $ease-out;
+}
+
+.visible {
+  opacity: 1;
+  transform: none;
+}
+
+@for $i from 1 through 4 {
+  .d#{$i} {
+    transition-delay: #{$i * 90}ms;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .reveal {
+    opacity: 1;
+    transform: none;
+  }
+}

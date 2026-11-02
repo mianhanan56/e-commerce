@@ -1,0 +1,89 @@
+@use "../../styles/tokens" as *;
+
+.header {
+  padding-block: $space-7 $space-7;
+  border-bottom: 1px solid $line;
+
+  @include up(md) {
+    padding-block: $space-8 $space-8;
+  }
+}
+
+.inner {
+  @include container;
+}
+
+.center {
+  text-align: center;
+
+  .inner {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
+
+  .intro {
+    margin-inline: auto;
+  }
+}
+
+.crumbs {
+  margin-bottom: $space-6;
+
+  ol {
+    display: flex;
+    flex-wrap: wrap;
+    gap: $space-2;
+    margin: 0;
+    padding: 0;
+    list-style: none;
+    font-size: $text-xs;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: $muted;
+  }
+
+  li:not(:last-child)::after {
+    content: "/";
+    margin-left: $space-2;
+    color: $gold;
+  }
+
+  a {
+    transition: color $dur-fast $ease;
+
+    @include hover {
+      &:hover {
+        color: $ink;
+      }
+    }
+  }
+
+  [aria-current] {
+    color: $ink;
+  }
+}
+
+.eyebrow {
+  @include eyebrow;
+  margin-bottom: $space-4;
+  color: $gold-deep;
+}
+
+.title {
+  font-size: $text-2xl;
+  font-weight: 300;
+
+  em {
+    font-style: italic;
+    color: $gold-deep;
+  }
+}
+
+.intro {
+  max-width: 36rem;
+  margin-top: $space-5;
+  font-size: $text-md;
+  font-weight: 300;
+  color: $muted;
+}

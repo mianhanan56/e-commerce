@@ -1,0 +1,15 @@
+@use "../../../styles/tokens" as *;
+
+.top {
+  @include container;
+  padding-block: $space-6 $section-y;
+}
+
+.related {
+  padding-block: $section-y;
+  background: $paper-deep;
+}
+
+.inner {
+  @include container;
+}

@@ -1,0 +1,76 @@
+@use "../../styles/tokens" as *;
+
+.benefits {
+  border-bottom: 1px solid $line;
+}
+
+.list {
+  @include container;
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+
+  @include up(lg) {
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+  }
+}
+
+.item {
+  display: flex;
+  flex-direction: column;
+  gap: $space-4;
+  padding: $space-6 $space-4;
+
+  @include up(md) {
+    flex-direction: row;
+    align-items: center;
+    padding: $space-7 $space-5;
+  }
+
+  // Hairline separators: a cross on the 2×2 grid, single dividers on one row.
+  &:nth-child(odd) {
+    border-right: 1px solid $line;
+    padding-left: 0;
+  }
+
+  &:nth-child(-n + 2) {
+    border-bottom: 1px solid $line;
+  }
+
+  @include up(lg) {
+    padding: $space-7 $space-6;
+
+    &:nth-child(-n + 2) {
+      border-bottom: 0;
+    }
+
+    &:not(:last-child) {
+      border-right: 1px solid $line;
+    }
+
+    &:nth-child(odd) {
+      padding-left: $space-6;
+    }
+
+    &:first-child {
+      padding-left: 0;
+    }
+  }
+}
+
+.icon {
+  flex-shrink: 0;
+  color: $gold-deep;
+}
+
+.title {
+  font-size: $text-lg;
+  font-weight: 500;
+  line-height: 1.2;
+}
+
+.text {
+  margin-top: $space-1;
+  font-size: $text-sm;
+  font-weight: 300;
+  color: $muted;
+}
