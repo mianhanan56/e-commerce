@@ -1,0 +1,293 @@
+@use "../../styles/tokens" as *;
+
+// Shared building blocks for every admin screen. Import as `ui` and compose:
+// header/title/subtitle, card, table, badge (+ status modifier), btn, input, empty.
+
+.root {
+  min-height: 100vh;
+  background: $paper;
+  // The serif's old-style figures make 1/I and 0/o ambiguous; admin numbers must read cleanly.
+  font-variant-numeric: lining-nums;
+}
+
+.header {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: $space-4;
+  margin-bottom: $space-6;
+}
+
+.eyebrow {
+  @include eyebrow;
+  margin-bottom: $space-2;
+  color: $gold-deep;
+}
+
+.title {
+  font-size: $text-xl;
+  font-weight: 400;
+}
+
+.subtitle {
+  margin-top: $space-1;
+  font-size: $text-sm;
+  color: $muted;
+}
+
+.card {
+  padding: $space-5;
+  background: $white;
+  border: 1px solid $line;
+
+  @include up(md) {
+    padding: $space-6;
+  }
+}
+
+.cardTitle {
+  @include eyebrow;
+  margin-bottom: $space-4;
+  color: $gold-deep;
+}
+
+.grid {
+  display: grid;
+  gap: $space-5;
+}
+
+.muted {
+  color: $muted;
+}
+
+.tableWrap {
+  overflow-x: auto;
+  background: $white;
+  border: 1px solid $line;
+}
+
+.table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: $text-sm;
+
+  th,
+  td {
+    padding: $space-3 $space-4;
+    border-bottom: 1px solid $line;
+    text-align: left;
+    vertical-align: middle;
+    white-space: nowrap;
+  }
+
+  th {
+    font-size: $text-xs;
+    font-weight: 500;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: $muted;
+    background: $paper;
+  }
+
+  tbody tr:last-child td {
+    border-bottom: 0;
+  }
+
+  tbody tr {
+    transition: background-color $dur-fast $ease;
+
+    @include hover {
+      &:hover {
+        background: rgba($paper, 0.6);
+      }
+    }
+  }
+
+  .num {
+    text-align: right;
+  }
+}
+
+.badge {
+  display: inline-flex;
+  align-items: center;
+  min-height: 1.5rem;
+  padding: 0 $space-2;
+  border: 1px solid currentColor;
+  font-size: 0.6875rem;
+  font-weight: 500;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  white-space: nowrap;
+}
+
+// Order statuses
+.pending {
+  color: #9a6a12;
+  background: #fbf3e2;
+}
+.confirmed {
+  color: #2d5b86;
+  background: #eaf1f8;
+}
+.packed {
+  color: #5b4a86;
+  background: #f0ecf8;
+}
+.shipped {
+  color: #1f6b6b;
+  background: #e6f3f2;
+}
+.delivered {
+  color: #2f6b34;
+  background: #e9f4ea;
+}
+.cancelled,
+.returned {
+  color: $muted;
+  background: $paper-deep;
+}
+
+// Payment statuses
+.unpaid {
+  color: $muted;
+  background: $white;
+}
+.paid {
+  color: #2f6b34;
+  background: #e9f4ea;
+}
+.refunded {
+  color: $sale;
+  background: #f8ecea;
+}
+
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: $space-2;
+  min-height: 2.5rem;
+  padding: 0 $space-5;
+  background: $ink;
+  border: 1px solid $ink;
+  color: $paper;
+  font-size: $text-xs;
+  font-weight: 500;
+  letter-spacing: $tracking-wide;
+  text-transform: uppercase;
+  white-space: nowrap;
+  transition:
+    background-color $dur-fast $ease,
+    color $dur-fast $ease,
+    border-color $dur-fast $ease;
+
+  @include hover {
+    &:hover:not(:disabled) {
+      background: $gold;
+      border-color: $gold;
+      color: $ink;
+    }
+  }
+
+  &:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+  }
+}
+
+.btnGhost {
+  background: transparent;
+  color: $ink;
+  border-color: $line;
+
+  @include hover {
+    &:hover:not(:disabled) {
+      background: $white;
+      border-color: $ink;
+      color: $ink;
+    }
+  }
+}
+
+.input,
+.select,
+.textarea {
+  width: 100%;
+  min-height: 2.5rem;
+  padding: 0 $space-3;
+  background: $white;
+  border: 1px solid $line;
+  border-radius: 0;
+  color: $ink;
+  font: inherit;
+  font-size: $text-sm;
+  transition: border-color $dur-fast $ease;
+
+  &:focus,
+  &:focus-visible {
+    outline: none;
+    border-color: $gold;
+  }
+}
+
+.select {
+  padding-right: $space-6;
+  appearance: none;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='14' height='14' viewBox='0 0 24 24' fill='none' stroke='%230d0d0c' stroke-width='1.5'%3E%3Cpath d='m6.5 9.5 5.5 5.5 5.5-5.5'/%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: right $space-3 center;
+}
+
+.textarea {
+  min-height: 6rem;
+  padding: $space-3;
+  resize: vertical;
+}
+
+.label {
+  display: block;
+  margin-bottom: $space-2;
+  font-size: $text-xs;
+  font-weight: 500;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: $muted;
+}
+
+.error {
+  font-size: $text-sm;
+  color: $sale;
+}
+
+.success {
+  font-size: $text-sm;
+  color: #2f6b34;
+}
+
+.empty {
+  padding: $space-8 $space-5;
+  text-align: center;
+  color: $muted;
+  background: $white;
+  border: 1px dashed $line;
+}
+
+.link {
+  text-decoration: underline;
+  text-decoration-color: $gold;
+  text-underline-offset: 3px;
+}
+
+.notice {
+  max-width: 40rem;
+  padding: $space-5 $space-6;
+  background: #fbf3e2;
+  border: 1px solid rgba(#9a6a12, 0.3);
+  font-size: $text-sm;
+
+  code {
+    font-size: 0.85em;
+  }
+}

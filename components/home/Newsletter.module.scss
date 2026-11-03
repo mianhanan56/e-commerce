@@ -119,3 +119,9 @@
 .srOnly {
   @include visually-hidden;
 }
+
+.error {
+  margin-top: $space-4;
+  font-size: $text-sm;
+  color: $gold-light;
+}

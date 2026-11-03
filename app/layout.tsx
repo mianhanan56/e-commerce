@@ -1,10 +1,5 @@
 import type { Metadata, Viewport } from "next";
 import { Cormorant_Garamond, Jost } from "next/font/google";
-import { CartProvider } from "@/components/cart/CartContext";
-import { AnnouncementBar } from "@/components/layout/AnnouncementBar";
-import { Footer } from "@/components/layout/Footer";
-import { Header } from "@/components/layout/Header";
-import { OrdersProvider } from "@/components/orders/OrdersContext";
 import "./globals.scss";
 
 const serif = Cormorant_Garamond({
@@ -37,17 +32,10 @@ export const viewport: Viewport = {
 
 export default function RootLayout({ children }: LayoutProps<"/">) {
   return (
-    <html lang="en" className={`${serif.variable} ${sans.variable}`}>
-      <body>
-        <OrdersProvider>
-          <CartProvider>
-            <AnnouncementBar />
-            <Header />
-            <main id="main">{children}</main>
-            <Footer />
-          </CartProvider>
-        </OrdersProvider>
-      </body>
+    // Browser extensions (dark mode, translators) add attributes to <html> before hydration.
+    // This only silences attribute mismatches on this one element, not its children.
+    <html lang="en" className={`${serif.variable} ${sans.variable}`} suppressHydrationWarning>
+      <body>{children}</body>
     </html>
   );
 }

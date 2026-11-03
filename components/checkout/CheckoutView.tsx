@@ -2,55 +2,41 @@
 
 import Image from "next/image";
 import Link from "next/link";
-import { useState } from "react";
+import { useState, useTransition } from "react";
 import { useCart } from "@/components/cart/CartContext";
 import { OrderSummary } from "@/components/cart/OrderSummary";
-import { useOrders, type Order } from "@/components/orders/OrdersContext";
 import { Button } from "@/components/ui/Button";
 import { EmptyState, LoadingState } from "@/components/ui/EmptyState";
 import { Icon } from "@/components/ui/Icon";
 import { formatPKR } from "@/data/catalog";
+import { placeOrder } from "@/lib/actions/store";
+import {
+  CITIES,
+  validateCheckout,
+  type CheckoutErrors,
+  type CheckoutField,
+  type CheckoutInput,
+} from "@/lib/orders";
+import type { PaymentMethod } from "@/lib/supabase/types";
 import form from "@/components/ui/Form.module.scss";
 import styles from "./CheckoutView.module.scss";
 
-const cities = [
-  "Lahore",
-  "Karachi",
-  "Islamabad",
-  "Rawalpindi",
-  "Faisalabad",
-  "Multan",
-  "Peshawar",
-  "Quetta",
-  "Sialkot",
-  "Gujranwala",
-  "Hyderabad",
-  "Abbottabad",
-  "Bahawalpur",
-  "Other",
-];
+type Field = CheckoutField;
 
-type Field = "name" | "phone" | "email" | "city" | "address";
-type Errors = Partial<Record<Field, string>>;
-
-const PHONE = /^(\+92|0092|0)?3\d{2}[\s-]?\d{7}$/;
-const EMAIL = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-
-function validate(data: Record<Field, string>): Errors {
-  const errors: Errors = {};
-  if (data.name.length < 2) errors.name = "Please enter your full name.";
-  if (!PHONE.test(data.phone)) errors.phone = "Enter a Pakistani mobile number, e.g. 0300 1234567.";
-  if (!EMAIL.test(data.email)) errors.email = "Enter a valid email address.";
-  if (!data.city) errors.city = "Choose your city.";
-  if (data.address.length < 10) errors.address = "Please include house, street and area.";
-  return errors;
-}
+type Placed = {
+  number: string;
+  total: number;
+  count: number;
+  payment: PaymentMethod;
+  customer: CheckoutInput;
+};
 
 export function CheckoutView() {
   const { items, subtotal, savings, hydrated, clearCart } = useCart();
-  const { placeOrder } = useOrders();
-  const [errors, setErrors] = useState<Errors>({});
-  const [placed, setPlaced] = useState<Order | null>(null);
+  const [errors, setErrors] = useState<CheckoutErrors>({});
+  const [formError, setFormError] = useState("");
+  const [placed, setPlaced] = useState<Placed | null>(null);
+  const [pending, startTransition] = useTransition();
 
   if (placed) return <Confirmation order={placed} />;
   if (!hydrated) return <LoadingState />;
@@ -65,40 +51,49 @@ export function CheckoutView() {
     );
   }
 
+  const focusFirst = (errs: CheckoutErrors) => {
+    const first = Object.keys(errs)[0];
+    if (first) document.getElementById(`checkout-${first}`)?.focus();
+  };
+
   const onSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
+    if (pending) return;
     const fd = new FormData(e.currentTarget);
     const get = (k: string) => String(fd.get(k) ?? "").trim();
-    const data = {
+    const customer: CheckoutInput = {
       name: get("name"),
       phone: get("phone"),
       email: get("email"),
       city: get("city"),
       address: get("address"),
+      notes: get("notes"),
     };
-    const next = validate(data);
+    const next = validateCheckout(customer);
     setErrors(next);
-    const firstInvalid = Object.keys(next)[0];
-    if (firstInvalid) {
-      document.getElementById(`checkout-${firstInvalid}`)?.focus();
-      return;
-    }
+    setFormError("");
+    if (Object.keys(next).length > 0) return focusFirst(next);
 
-    const order = placeOrder({
-      items: items.map((i) => ({
-        id: i.id,
-        name: i.product.name,
-        image: i.product.image,
-        price: i.product.price,
-        qty: i.qty,
-      })),
-      subtotal,
-      payment: get("payment") === "bank" ? "bank" : "cod",
-      customer: data,
+    const payment: PaymentMethod = get("payment") === "bank" ? "bank" : "cod";
+    const count = items.reduce((n, i) => n + i.qty, 0);
+    startTransition(async () => {
+      const result = await placeOrder({
+        customer,
+        payment,
+        items: items.map((i) => ({ productId: i.id, qty: i.qty })),
+      });
+      if (!result.ok) {
+        setFormError(result.error);
+        if (result.fieldErrors) {
+          setErrors(result.fieldErrors);
+          focusFirst(result.fieldErrors);
+        }
+        return;
+      }
+      clearCart();
+      setPlaced({ number: result.orderNumber, total: result.total, count, payment, customer });
+      window.scrollTo({ top: 0, behavior: "smooth" });
     });
-    clearCart();
-    setPlaced(order);
-    window.scrollTo({ top: 0, behavior: "smooth" });
   };
 
   const fieldProps = (name: Field) => ({
@@ -173,7 +168,7 @@ export function CheckoutView() {
                 <option value="" disabled>
                   Select your city
                 </option>
-                {cities.map((c) => (
+                {CITIES.map((c) => (
                   <option key={c}>{c}</option>
                 ))}
               </select>
@@ -196,11 +191,12 @@ export function CheckoutView() {
                 Delivery notes <span className={form.hint}>(optional)</span>
               </label>
               <textarea
-                id="checkout-notes"
-                name="notes"
+                {...fieldProps("notes")}
                 className={form.textarea}
+                maxLength={500}
                 placeholder="Nearest landmark, preferred delivery time…"
               />
+              {error("notes")}
             </div>
           </div>
         </fieldset>
@@ -231,8 +227,13 @@ export function CheckoutView() {
           </div>
         </fieldset>
 
-        <Button type="submit" variant="dark" block withArrow>
-          Place Order · {formatPKR(subtotal)}
+        {formError && (
+          <p className={styles.formError} role="alert">
+            {formError}
+          </p>
+        )}
+        <Button type="submit" variant="dark" block withArrow={!pending} disabled={pending}>
+          {pending ? "Placing your order…" : `Place Order · ${formatPKR(subtotal)}`}
         </Button>
         <p className={styles.terms}>
           By placing your order you agree to our <Link href="/help/terms">Terms of Service</Link>{" "}
@@ -268,9 +269,9 @@ export function CheckoutView() {
   );
 }
 
-function Confirmation({ order }: { order: Order }) {
+function Confirmation({ order }: { order: Placed }) {
   const firstName = order.customer.name.split(" ")[0];
-  const count = order.items.reduce((n, i) => n + i.qty, 0);
+  const { count } = order;
 
   return (
     <div className={styles.confirm} role="status">
@@ -283,7 +284,7 @@ function Confirmation({ order }: { order: Order }) {
       </h2>
       <p className={styles.confirmText}>
         We&apos;ve received your order for {count} {count === 1 ? "watch" : "watches"} (
-        {formatPKR(order.subtotal)}). Our team will call {order.customer.phone} to confirm, then it
+        {formatPKR(order.total)}). Our team will call {order.customer.phone} to confirm, then it
         ships to {order.customer.city} within 2–4 working days.
         {order.payment === "cod"
           ? " Please keep the exact amount ready for the rider."

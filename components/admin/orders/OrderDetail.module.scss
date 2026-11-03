@@ -1,0 +1,309 @@
+@use "../../../styles/tokens" as *;
+
+.slip {
+  display: grid;
+}
+
+.back {
+  display: inline-flex;
+  align-items: center;
+  gap: $space-2;
+  justify-self: start;
+  margin-bottom: $space-4;
+  font-size: $text-xs;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: $muted;
+
+  @include hover {
+    &:hover {
+      color: $ink;
+    }
+  }
+}
+
+.backIcon {
+  transform: rotate(180deg);
+}
+
+.titleRow {
+  display: inline-flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: $space-3;
+}
+
+.layout {
+  display: grid;
+  gap: $space-5;
+
+  @include up(lg) {
+    grid-template-columns: minmax(0, 1fr) 22rem;
+    align-items: start;
+  }
+}
+
+.main,
+.side {
+  display: grid;
+  gap: $space-5;
+  min-width: 0;
+}
+
+// Items
+.items {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: $text-sm;
+
+  th,
+  td {
+    padding: $space-3 0;
+    border-bottom: 1px solid $line;
+    text-align: left;
+    vertical-align: middle;
+  }
+
+  th {
+    font-size: $text-xs;
+    font-weight: 500;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: $muted;
+  }
+
+  th + th,
+  td + td {
+    padding-left: $space-4;
+  }
+
+  // Keep "Rs 19,500" on one line; the watch name column absorbs the squeeze on phones.
+  .num {
+    text-align: right;
+    white-space: nowrap;
+  }
+}
+
+.product {
+  display: flex;
+  align-items: center;
+  gap: $space-3;
+}
+
+.thumb {
+  position: relative;
+  flex-shrink: 0;
+  width: 3rem;
+  aspect-ratio: 4 / 5;
+  overflow: hidden;
+  background: $paper-deep;
+}
+
+.image {
+  object-fit: cover;
+}
+
+.productName {
+  display: block;
+  font-family: $font-serif;
+  font-size: $text-md;
+  line-height: 1.2;
+}
+
+.productLine {
+  display: block;
+  font-size: $text-xs;
+  color: $muted;
+}
+
+.was {
+  display: block;
+  font-size: $text-xs;
+  color: $muted;
+}
+
+.totals {
+  display: grid;
+  gap: $space-2;
+  max-width: 20rem;
+  margin: $space-5 0 0 auto;
+  font-size: $text-sm;
+
+  div {
+    display: flex;
+    justify-content: space-between;
+    gap: $space-4;
+  }
+
+  dd {
+    margin: 0;
+  }
+}
+
+.savings {
+  color: $sale;
+}
+
+.grand {
+  margin-top: $space-1;
+  padding-top: $space-3;
+  border-top: 1px solid $line;
+  font-weight: 500;
+
+  dd {
+    font-family: $font-serif;
+    font-size: $text-lg;
+  }
+}
+
+.collect {
+  font-size: $text-xs;
+  font-weight: 400;
+  color: $muted;
+}
+
+// Timeline
+.timeline {
+  display: grid;
+  gap: $space-4;
+  margin: 0;
+  padding: 0 0 0 $space-5;
+  list-style: none;
+  border-left: 1px solid $line;
+
+  li {
+    position: relative;
+
+    &::before {
+      content: "";
+      position: absolute;
+      top: 0.45rem;
+      left: calc(-1 * #{$space-5} - 4px);
+      width: 7px;
+      height: 7px;
+      border-radius: 50%;
+      background: $gold;
+    }
+  }
+}
+
+.eventText {
+  font-size: $text-sm;
+}
+
+.eventMeta {
+  font-size: $text-xs;
+  color: $muted;
+}
+
+// Customer
+.customerName {
+  font-family: $font-serif;
+  font-size: $text-lg;
+}
+
+.contact {
+  display: grid;
+  gap: $space-2;
+  margin: $space-3 0;
+  font-size: $text-sm;
+
+  li {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: $space-2 $space-4;
+    overflow-wrap: anywhere;
+  }
+}
+
+.whatsapp {
+  display: inline-flex;
+  align-items: center;
+  gap: $space-1;
+  padding: $space-1 $space-3;
+  border: 1px solid #2f6b34;
+  font-size: $text-xs;
+  font-weight: 500;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: #2f6b34;
+
+  @include hover {
+    &:hover {
+      background: #e9f4ea;
+    }
+  }
+}
+
+.address {
+  font-size: $text-sm;
+  font-style: normal;
+  line-height: 1.5;
+}
+
+.customerNotes {
+  margin-top: $space-4;
+  padding: $space-3 $space-4;
+  background: #fbf3e2;
+  border-left: 2px solid $gold;
+  font-size: $text-sm;
+
+  span {
+    display: block;
+    margin-bottom: $space-1;
+    font-size: $text-xs;
+    font-weight: 500;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: #9a6a12;
+  }
+}
+
+.method {
+  margin-bottom: $space-4;
+  font-family: $font-serif;
+  font-size: $text-md;
+}
+
+// Forms
+.form {
+  display: grid;
+  gap: $space-3;
+}
+
+.inline {
+  display: flex;
+  gap: $space-2;
+}
+
+.hint {
+  font-size: $text-xs;
+  font-weight: 400;
+  letter-spacing: 0;
+  text-transform: none;
+  color: $muted;
+}
+
+// Packing slip: drop the admin sidebar, forms and history; keep items and customer.
+@media print {
+  :global(body):has(.slip) :global(aside) {
+    display: none !important;
+  }
+
+  :global(body):has(.slip) :global(div:has(> main)) {
+    display: block !important;
+  }
+
+  :global(body):has(.slip) :global(main) {
+    padding: 0 !important;
+  }
+
+  .noPrint {
+    display: none !important;
+  }
+
+  .layout {
+    grid-template-columns: 1fr;
+  }
+}

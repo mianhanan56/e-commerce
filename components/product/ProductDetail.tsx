@@ -47,15 +47,18 @@ export function ProductDetail({ product, category }: Props) {
   return (
     <div className={styles.layout}>
       <div className={styles.media} onMouseMove={onMove}>
-        <Image
-          src={product.image}
-          alt={`${product.name} men's watch, ${product.line}`}
-          fill
-          loading="eager"
-          fetchPriority="high"
-          sizes="(min-width: 1024px) 58vw, 100vw"
-          className={styles.image}
-        />
+        {/* next/image `fill` needs a relative/absolute parent; .media is sticky on desktop. */}
+        <div className={styles.frame}>
+          <Image
+            src={product.image}
+            alt={`${product.name} men's watch, ${product.line}`}
+            fill
+            loading="eager"
+            fetchPriority="high"
+            sizes="(min-width: 1024px) 58vw, 100vw"
+            className={styles.image}
+          />
+        </div>
         {off > 0 ? (
           <span className={styles.badge}>Save {off}%</span>
         ) : (

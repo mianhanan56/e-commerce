@@ -166,18 +166,14 @@
   }
 }
 
-.flag,
-.sort {
+.flag {
+  display: inline-flex;
   min-height: 2.5rem;
   border: 1px solid $line;
   font-size: 0.6875rem;
   font-weight: 500;
   letter-spacing: 0.12em;
   text-transform: uppercase;
-}
-
-.flag {
-  display: inline-flex;
   align-items: center;
   gap: $space-1;
   flex-shrink: 0;
@@ -207,48 +203,10 @@
 }
 
 .sort {
-  position: relative;
-  display: inline-flex;
-  align-items: center;
-  gap: $space-2;
   flex: 1 1 auto;
-  padding-left: $space-4;
-  background: $white;
 
   @include up(md) {
     flex: 0 0 auto;
-  }
-  color: $muted;
-  transition: border-color $dur-fast $ease;
-
-  &:focus-within {
-    border-color: $gold;
-  }
-
-  select {
-    align-self: stretch;
-    flex: 1;
-    min-width: 11.5rem;
-    padding: 0 $space-7 0 0;
-    background: transparent;
-    border: 0;
-    color: $ink;
-    font: inherit;
-    letter-spacing: inherit;
-    text-transform: inherit;
-    cursor: pointer;
-    appearance: none;
-
-    &:focus-visible {
-      outline: none;
-    }
-  }
-
-  svg {
-    position: absolute;
-    right: $space-3;
-    pointer-events: none;
-    color: $ink;
   }
 }
 

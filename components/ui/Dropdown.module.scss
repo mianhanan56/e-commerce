@@ -1,0 +1,112 @@
+@use "../../styles/tokens" as *;
+
+.root {
+  position: relative;
+  font-size: 0.6875rem;
+  font-weight: 500;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+}
+
+.trigger {
+  display: flex;
+  align-items: center;
+  gap: $space-2;
+  width: 100%;
+  min-height: 2.5rem;
+  padding: 0 $space-3 0 $space-4;
+  background: $white;
+  border: 1px solid $line;
+  letter-spacing: inherit;
+  text-align: left;
+  text-transform: inherit;
+  transition: border-color $dur-fast $ease;
+
+  @include hover {
+    &:hover {
+      border-color: $ink;
+    }
+  }
+
+  .open & {
+    border-color: $ink;
+  }
+}
+
+.label {
+  color: $muted;
+}
+
+.value {
+  flex: 1;
+  min-width: 9.5rem;
+  color: $ink;
+}
+
+.chevron {
+  flex-shrink: 0;
+  transition: transform $dur $ease-out;
+
+  .open & {
+    transform: rotate(180deg);
+  }
+}
+
+.menu {
+  position: absolute;
+  top: calc(100% + #{$space-1});
+  right: 0;
+  z-index: 20;
+  min-width: 100%;
+  padding: $space-2 0;
+  background: $white;
+  border: 1px solid $line;
+  box-shadow: 0 18px 40px -18px rgba($ink, 0.28);
+  opacity: 0;
+  visibility: hidden;
+  transform: translateY(-6px);
+  transition:
+    opacity $dur-fast $ease,
+    transform $dur-fast $ease,
+    visibility 0s linear $dur-fast;
+
+  .open & {
+    opacity: 1;
+    visibility: visible;
+    transform: none;
+    transition:
+      opacity $dur-fast $ease,
+      transform $dur-fast $ease;
+  }
+
+  &:focus-visible {
+    outline: none;
+  }
+}
+
+.option {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: $space-4;
+  padding: $space-3 $space-4;
+  color: $muted;
+  white-space: nowrap;
+  cursor: pointer;
+  transition:
+    background-color $dur-fast $ease,
+    color $dur-fast $ease;
+
+  &[aria-selected="true"] {
+    color: $ink;
+  }
+}
+
+.active {
+  background: $paper;
+  color: $ink;
+}
+
+.check {
+  color: $gold-deep;
+}

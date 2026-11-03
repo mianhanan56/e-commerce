@@ -40,6 +40,7 @@ export default function CollectionsPage() {
                     src={c.image}
                     alt=""
                     fill
+                    loading={i === 0 ? "eager" : undefined}
                     sizes="(min-width: 1024px) 55vw, 100vw"
                     className={styles.image}
                   />

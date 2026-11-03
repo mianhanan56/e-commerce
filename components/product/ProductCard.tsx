@@ -8,7 +8,7 @@ import { Icon } from "@/components/ui/Icon";
 import { discountPercent, formatPKR, type Product } from "@/data/catalog";
 import styles from "./ProductCard.module.scss";
 
-export function ProductCard({ product }: { product: Product }) {
+export function ProductCard({ product, eager = false }: { product: Product; eager?: boolean }) {
   const { addToCart, toggleWishlist, isWishlisted } = useCart();
   const [added, setAdded] = useState(false);
   const saved = isWishlisted(product.id);
@@ -29,6 +29,7 @@ export function ProductCard({ product }: { product: Product }) {
             src={product.image}
             alt={`${product.name} men's watch`}
             fill
+            loading={eager ? "eager" : undefined}
             sizes="(min-width: 1024px) 24vw, (min-width: 768px) 32vw, 50vw"
             className={styles.image}
           />

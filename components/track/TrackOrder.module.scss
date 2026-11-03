@@ -231,3 +231,12 @@
 .total {
   font-weight: 500;
 }
+
+.closed {
+  margin-bottom: $space-6;
+  padding: $space-4 $space-5;
+  background: $paper;
+  border: 1px solid $line;
+  font-weight: 300;
+  color: $muted;
+}

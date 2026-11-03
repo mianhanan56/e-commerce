@@ -2,53 +2,48 @@
 
 import Image from "next/image";
 import Link from "next/link";
-import { useState } from "react";
-import { useOrders, type Order } from "@/components/orders/OrdersContext";
+import { useState, useTransition } from "react";
 import { Button } from "@/components/ui/Button";
 import { Icon } from "@/components/ui/Icon";
 import f from "@/components/ui/Form.module.scss";
 import { formatPKR } from "@/data/catalog";
+import { trackOrder } from "@/lib/actions/store";
+import { formatDate, formatDateTime, PAYMENT_METHOD_LABEL } from "@/lib/orders";
+import type { OrderStatus, TrackedOrder } from "@/lib/supabase/types";
 import styles from "./TrackOrder.module.scss";
 
-const stages = [
-  { title: "Confirmed", text: "We've received your order and confirmed it with you." },
-  { title: "Packed", text: "Inspected by hand, boxed and sealed in our Lahore studio." },
-  { title: "Shipped", text: "With our courier partner, insured and on its way." },
-  { title: "Delivered", text: "In your hands. Enjoy every minute." },
+const stages: { status: OrderStatus; title: string; text: string }[] = [
+  {
+    status: "pending",
+    title: "Placed",
+    text: "We've received your order and will call to confirm.",
+  },
+  { status: "confirmed", title: "Confirmed", text: "Confirmed with you and queued for packing." },
+  {
+    status: "packed",
+    title: "Packed",
+    text: "Inspected by hand, boxed and sealed in our Lahore studio.",
+  },
+  {
+    status: "shipped",
+    title: "Shipped",
+    text: "With our courier partner, insured and on its way.",
+  },
+  { status: "delivered", title: "Delivered", text: "In your hands. Enjoy every minute." },
 ];
 
-const HOUR = 60 * 60 * 1000;
-
-// Design-phase stand-in for courier tracking: advance the stage with the order's age.
-function stageFor(order: Order, now: number) {
-  const age = now - new Date(order.date).getTime();
-  if (age < 2 * HOUR) return 0;
-  if (age < 24 * HOUR) return 1;
-  if (age < 72 * HOUR) return 2;
-  return 3;
-}
-
-const digits = (s: string) => s.replace(/\D/g, "").slice(-10);
-
-type Result = { order: Order; stage: number } | "missing";
+type Result = { ok: true; order: TrackedOrder } | { ok: false; error: string };
 
 export function TrackOrder() {
-  const { findOrder } = useOrders();
   const [result, setResult] = useState<Result | null>(null);
+  const [pending, startTransition] = useTransition();
 
   const onSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     const data = new FormData(e.currentTarget);
-    const order = findOrder(String(data.get("number") ?? ""));
-    const contact = String(data.get("contact") ?? "")
-      .trim()
-      .toLowerCase();
-    const matches =
-      order &&
-      (!contact ||
-        contact === order.customer.email.toLowerCase() ||
-        (digits(contact).length >= 7 && digits(contact) === digits(order.customer.phone)));
-    setResult(matches ? { order, stage: stageFor(order, Date.now()) } : "missing");
+    const number = String(data.get("number") ?? "");
+    const contact = String(data.get("contact") ?? "");
+    startTransition(async () => setResult(await trackOrder(number, contact)));
   };
 
   return (
@@ -69,31 +64,28 @@ export function TrackOrder() {
         </div>
         <div className={f.field}>
           <label htmlFor="track-contact" className={f.label}>
-            Phone or email <span className={f.hint}>(optional)</span>
+            Phone or email
           </label>
           <input
             id="track-contact"
             name="contact"
-            placeholder="Used when you placed the order"
+            required
+            placeholder="The one you used at checkout"
             className={f.input}
           />
         </div>
-        <Button type="submit" variant="dark" withArrow block>
-          Track Order
+        <Button type="submit" variant="dark" withArrow={!pending} block disabled={pending}>
+          {pending ? "Looking it up…" : "Track Order"}
         </Button>
-        <p className={f.hint}>
-          While our store is in preview, orders are only stored in this browser.
-        </p>
       </form>
 
       <div className={styles.result} aria-live="polite">
-        {result === "missing" && (
+        {result && !result.ok && (
           <div className={styles.empty}>
             <Icon name="search" size={28} className={styles.emptyIcon} />
             <h2 className={styles.emptyTitle}>We couldn&apos;t find that order</h2>
             <p className={styles.emptyText}>
-              Check the number on your confirmation email or SMS. If it still doesn&apos;t show up,
-              our team can look it up for you.
+              {result.error} If it still doesn&apos;t show up, our team can look it up for you.
             </p>
             <Button href="/contact" variant="outline">
               Contact Us
@@ -101,7 +93,7 @@ export function TrackOrder() {
           </div>
         )}
 
-        {result && result !== "missing" && <OrderStatus {...result} />}
+        {result?.ok && <OrderStatus order={result.order} />}
 
         {!result && (
           <div className={styles.empty}>
@@ -118,60 +110,90 @@ export function TrackOrder() {
   );
 }
 
-function OrderStatus({ order, stage }: { order: Order; stage: number }) {
-  const placed = new Date(order.date).toLocaleDateString("en-PK", {
-    day: "numeric",
-    month: "long",
-    year: "numeric",
-  });
+function OrderStatus({ order }: { order: TrackedOrder }) {
+  const closed = order.status === "cancelled" || order.status === "returned";
+  const stage = stages.findIndex((s) => s.status === order.status);
+  const reachedAt = (status: OrderStatus) =>
+    order.events.findLast((e) => e.status === status)?.created_at;
+  const current = stages[stage];
 
   return (
     <div className={styles.status}>
       <div className={styles.statusHead}>
         <div>
-          <p className={styles.label}>Order {order.number}</p>
+          <p className={styles.label}>Order {order.order_number}</p>
           <h2 className={styles.statusTitle}>
-            {stages[stage].title === "Delivered" ? (
+            {closed ? (
+              <>
+                Order <em>{order.status}</em>
+              </>
+            ) : current.status === "delivered" ? (
               "Delivered"
             ) : (
               <>
-                Currently <em>{stages[stage].title.toLowerCase()}</em>
+                Currently <em>{current.title.toLowerCase()}</em>
               </>
             )}
           </h2>
         </div>
-        <p className={styles.placed}>Placed {placed}</p>
+        <p className={styles.placed}>Placed {formatDate(order.created_at)}</p>
       </div>
 
-      <ol className={styles.timeline}>
-        {stages.map((s, i) => (
-          <li
-            key={s.title}
-            className={`${styles.stage} ${i <= stage ? styles.done : ""} ${i === stage ? styles.current : ""}`}
-            aria-current={i === stage ? "step" : undefined}
-          >
-            <span className={styles.dot}>{i <= stage && <Icon name="check" size={14} />}</span>
-            <div>
-              <p className={styles.stageTitle}>{s.title}</p>
-              <p className={styles.stageText}>{s.text}</p>
-            </div>
-          </li>
-        ))}
-      </ol>
+      {closed ? (
+        <p className={styles.closed}>
+          {order.status === "cancelled"
+            ? "This order was cancelled. If that's unexpected, please contact us and we'll help."
+            : "This order was returned to us. Our team will be in touch about your exchange or refund."}
+        </p>
+      ) : (
+        <ol className={styles.timeline}>
+          {stages.map((s, i) => {
+            const at = i <= stage ? reachedAt(s.status) : undefined;
+            return (
+              <li
+                key={s.status}
+                className={`${styles.stage} ${i <= stage ? styles.done : ""} ${i === stage ? styles.current : ""}`}
+                aria-current={i === stage ? "step" : undefined}
+              >
+                <span className={styles.dot}>{i <= stage && <Icon name="check" size={14} />}</span>
+                <div>
+                  <p className={styles.stageTitle}>{s.title}</p>
+                  <p className={styles.stageText}>
+                    {at ? formatDateTime(at) : s.text}
+                    {s.status === "shipped" && i <= stage && order.tracking_number && (
+                      <>
+                        {" "}
+                        · {order.courier ?? "Courier"} tracking{" "}
+                        <strong>{order.tracking_number}</strong>
+                      </>
+                    )}
+                  </p>
+                </div>
+              </li>
+            );
+          })}
+        </ol>
+      )}
 
       <ul className={styles.items}>
-        {order.items.map((item) => (
-          <li key={item.id} className={styles.item}>
+        {order.items.map((item, i) => (
+          <li key={`${item.product_id}-${i}`} className={styles.item}>
             <div className={styles.thumb}>
-              <Image src={item.image} alt="" fill sizes="4rem" className={styles.thumbImage} />
+              {item.image && (
+                <Image src={item.image} alt="" fill sizes="4rem" className={styles.thumbImage} />
+              )}
             </div>
             <div className={styles.itemInfo}>
-              <Link href={`/products/${item.id}`} className={styles.itemName}>
-                {item.name}
-              </Link>
+              {item.product_id ? (
+                <Link href={`/products/${item.product_id}`} className={styles.itemName}>
+                  {item.name}
+                </Link>
+              ) : (
+                <span className={styles.itemName}>{item.name}</span>
+              )}
               <p className={styles.itemQty}>Qty {item.qty}</p>
             </div>
-            <p className={styles.itemPrice}>{formatPKR(item.price * item.qty)}</p>
+            <p className={styles.itemPrice}>{formatPKR(item.unit_price * item.qty)}</p>
           </li>
         ))}
       </ul>
@@ -179,17 +201,18 @@ function OrderStatus({ order, stage }: { order: Order; stage: number }) {
       <dl className={styles.summary}>
         <div>
           <dt>Delivery to</dt>
-          <dd>
-            {order.customer.name}, {order.customer.city}
-          </dd>
+          <dd>{order.city}</dd>
         </div>
         <div>
           <dt>Payment</dt>
-          <dd>{order.payment === "cod" ? "Cash on delivery" : "Bank transfer"}</dd>
+          <dd>
+            {PAYMENT_METHOD_LABEL[order.payment_method]}
+            {order.payment_status === "paid" && " · Paid"}
+          </dd>
         </div>
         <div>
           <dt>Total</dt>
-          <dd className={styles.total}>{formatPKR(order.subtotal)}</dd>
+          <dd className={styles.total}>{formatPKR(order.total)}</dd>
         </div>
       </dl>
     </div>

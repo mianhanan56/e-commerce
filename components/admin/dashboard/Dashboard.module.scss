@@ -1,0 +1,133 @@
+@use "../../../styles/tokens" as *;
+
+.dashboard {
+  display: grid;
+  gap: $space-7;
+}
+
+.stats {
+  display: grid;
+  gap: $space-3;
+
+  @include up(sm) {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  @include up(xl) {
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+  }
+}
+
+.stat {
+  display: flex;
+  flex-direction: column;
+  gap: $space-1;
+  height: 100%;
+  padding: $space-5;
+  background: $white;
+  border: 1px solid $line;
+  transition: border-color $dur-fast $ease;
+}
+
+.statLink {
+  @include hover {
+    &:hover {
+      border-color: $ink;
+    }
+  }
+}
+
+.statLabel {
+  font-size: $text-xs;
+  font-weight: 500;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: $muted;
+}
+
+.statValue {
+  font-family: $font-serif;
+  font-size: $text-xl;
+  line-height: 1.15;
+}
+
+.statSub {
+  font-size: $text-xs;
+  color: $muted;
+}
+
+.emphasis {
+  background: #fbf3e2;
+  border-color: rgba(#9a6a12, 0.35);
+
+  .statValue,
+  .statLabel {
+    color: #9a6a12;
+  }
+}
+
+.columns {
+  display: grid;
+  gap: $space-6;
+
+  @include up(xl) {
+    grid-template-columns: minmax(0, 2fr) minmax(0, 1fr);
+    align-items: start;
+  }
+}
+
+.sectionHead {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: $space-4;
+
+  h2 {
+    margin-bottom: $space-4;
+  }
+}
+
+.more {
+  display: inline-flex;
+  align-items: center;
+  gap: $space-1;
+  font-size: $text-xs;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: $muted;
+  transition: color $dur-fast $ease;
+
+  @include hover {
+    &:hover {
+      color: $ink;
+    }
+  }
+}
+
+.stockList {
+  display: grid;
+
+  li {
+    display: flex;
+    justify-content: space-between;
+    gap: $space-4;
+    padding-block: $space-3;
+    border-bottom: 1px solid $line;
+    font-size: $text-sm;
+
+    &:last-child {
+      border-bottom: 0;
+    }
+  }
+}
+
+.low {
+  color: #9a6a12;
+  white-space: nowrap;
+}
+
+.soldOut {
+  color: $sale;
+  font-weight: 500;
+  white-space: nowrap;
+}

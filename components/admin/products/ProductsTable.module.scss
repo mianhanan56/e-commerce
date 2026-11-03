@@ -1,0 +1,72 @@
+@use "../../../styles/tokens" as *;
+
+.watch {
+  display: flex;
+  align-items: center;
+  gap: $space-3;
+}
+
+.thumb {
+  position: relative;
+  flex-shrink: 0;
+  width: 2.75rem;
+  height: 2.75rem;
+  overflow: hidden;
+  background: $paper-deep;
+}
+
+.image {
+  object-fit: cover;
+}
+
+.name {
+  display: block;
+  font-weight: 500;
+}
+
+.id {
+  display: block;
+  font-size: $text-xs;
+  color: $muted;
+}
+
+.category {
+  text-transform: capitalize;
+}
+
+.was {
+  display: block;
+  font-size: $text-xs;
+  color: $muted;
+}
+
+.low {
+  color: #9a6a12;
+  font-weight: 500;
+}
+
+.soldOut {
+  color: $sale;
+  font-weight: 500;
+}
+
+.view {
+  display: inline-flex;
+  align-items: center;
+  gap: $space-1;
+  font-size: $text-xs;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: $muted;
+  transition: color $dur-fast $ease;
+
+  @include hover {
+    &:hover {
+      color: $ink;
+    }
+  }
+}
+
+.srOnly {
+  @include visually-hidden;
+}

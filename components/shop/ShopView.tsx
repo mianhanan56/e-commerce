@@ -4,6 +4,7 @@ import { useRouter, useSearchParams } from "next/navigation";
 import { useMemo } from "react";
 import { ProductGrid } from "@/components/product/ProductGrid";
 import { Button } from "@/components/ui/Button";
+import { Dropdown } from "@/components/ui/Dropdown";
 import { Icon } from "@/components/ui/Icon";
 import { categories, getCategory, products, searchProducts } from "@/data/catalog";
 import styles from "./ShopView.module.scss";
@@ -144,27 +145,18 @@ export function ShopView() {
               ))}
             </div>
 
-            <label className={styles.sort}>
-              <span>Sort</span>
-              <select
-                value={sort}
-                onChange={(e) =>
-                  update({ sort: e.target.value === "featured" ? undefined : e.target.value })
-                }
-              >
-                {sorts.map((s) => (
-                  <option key={s.value} value={s.value}>
-                    {s.label}
-                  </option>
-                ))}
-              </select>
-              <Icon name="chevron" size={16} />
-            </label>
+            <Dropdown
+              label="Sort"
+              value={sort}
+              options={sorts}
+              onChange={(v) => update({ sort: v === "featured" ? undefined : v })}
+              className={styles.sort}
+            />
           </div>
         </div>
 
         {results.length > 0 ? (
-          <ProductGrid products={results} />
+          <ProductGrid products={results} eager={4} />
         ) : (
           <div className={styles.empty}>
             <h2 className={styles.emptyTitle}>

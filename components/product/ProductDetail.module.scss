@@ -28,6 +28,11 @@
   }
 }
 
+.frame {
+  position: absolute;
+  inset: 0;
+}
+
 .image {
   object-fit: cover;
   transform-origin: var(--x, 50%) var(--y, 50%);

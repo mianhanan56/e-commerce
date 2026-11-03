@@ -1,17 +1,26 @@
 "use client";
 
 import Image from "next/image";
-import { useState } from "react";
+import { useState, useTransition } from "react";
 import { Icon } from "@/components/ui/Icon";
 import { Reveal } from "@/components/ui/Reveal";
+import { subscribeNewsletter } from "@/lib/actions/store";
 import styles from "./Newsletter.module.scss";
 
 export function Newsletter() {
   const [done, setDone] = useState(false);
+  const [error, setError] = useState("");
+  const [pending, startTransition] = useTransition();
 
   const onSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    setDone(true);
+    const email = String(new FormData(e.currentTarget).get("email") ?? "");
+    setError("");
+    startTransition(async () => {
+      const result = await subscribeNewsletter(email);
+      if (result.ok) setDone(true);
+      else setError(result.error);
+    });
   };
 
   return (
@@ -38,16 +47,22 @@ export function Newsletter() {
             </label>
             <input
               id="newsletter-email"
+              name="email"
               type="email"
               required
               placeholder="Your email address"
               autoComplete="email"
               className={styles.input}
             />
-            <button type="submit" className={styles.submit}>
-              Subscribe <Icon name="arrow" size={18} />
+            <button type="submit" className={styles.submit} disabled={pending}>
+              {pending ? "Subscribing…" : "Subscribe"} <Icon name="arrow" size={18} />
             </button>
           </form>
+        )}
+        {error && (
+          <p className={styles.error} role="alert">
+            {error}
+          </p>
         )}
       </Reveal>
     </section>

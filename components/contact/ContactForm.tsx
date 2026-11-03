@@ -1,9 +1,10 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useTransition } from "react";
 import { Button } from "@/components/ui/Button";
 import { Icon } from "@/components/ui/Icon";
 import f from "@/components/ui/Form.module.scss";
+import { submitContact } from "@/lib/actions/store";
 import styles from "./Contact.module.scss";
 
 const topics = ["Order", "Product question", "Returns & warranty", "Corporate gifting", "Other"];
@@ -15,7 +16,7 @@ function validate(data: FormData): Errors {
   const name = String(data.get("name") ?? "").trim();
   const email = String(data.get("email") ?? "").trim();
   const message = String(data.get("message") ?? "").trim();
-  if (!name) errors.name = "Please enter your name.";
+  if (name.length < 2) errors.name = "Please enter your name.";
   if (!/^\S+@\S+\.\S+$/.test(email)) errors.email = "Please enter a valid email address.";
   if (message.length < 10) errors.message = "Please write at least a few words.";
   return errors;
@@ -24,13 +25,30 @@ function validate(data: FormData): Errors {
 export function ContactForm() {
   const [errors, setErrors] = useState<Errors>({});
   const [sentTo, setSentTo] = useState<string | null>(null);
+  const [formError, setFormError] = useState("");
+  const [pending, startTransition] = useTransition();
 
   const onSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     const data = new FormData(e.currentTarget);
     const next = validate(data);
     setErrors(next);
-    if (Object.keys(next).length === 0) setSentTo(String(data.get("name")).trim().split(" ")[0]);
+    setFormError("");
+    if (Object.keys(next).length > 0 || pending) return;
+
+    const get = (k: string) => String(data.get(k) ?? "");
+    startTransition(async () => {
+      const result = await submitContact({
+        name: get("name"),
+        email: get("email"),
+        phone: get("phone"),
+        topic: get("topic"),
+        orderNumber: get("order"),
+        message: get("message"),
+      });
+      if (result.ok) setSentTo(get("name").trim().split(" ")[0]);
+      else setFormError(result.error);
+    });
   };
 
   if (sentTo) {
@@ -145,8 +163,13 @@ export function ContactForm() {
         )}
       </div>
 
-      <Button type="submit" variant="dark" withArrow block>
-        Send Message
+      {formError && (
+        <p className={f.error} role="alert">
+          {formError}
+        </p>
+      )}
+      <Button type="submit" variant="dark" withArrow={!pending} block disabled={pending}>
+        {pending ? "Sending…" : "Send Message"}
       </Button>
     </form>
   );

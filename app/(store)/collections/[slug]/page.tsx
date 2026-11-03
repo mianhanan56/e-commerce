@@ -79,7 +79,9 @@ export default async function CollectionPage({ params }: PageProps<"/collections
             intro={category.description}
           />
         </Reveal>
-        <ProductGrid products={items} columns={3} />
+        {/* Some placeholder products reuse the hero photo; a lazy copy would make next/image
+            flag the eager hero as a lazy LCP. Collections are small, so load them all. */}
+        <ProductGrid products={items} columns={3} eager={items.length} />
       </section>
 
       <section className={styles.others} aria-labelledby="others-title">

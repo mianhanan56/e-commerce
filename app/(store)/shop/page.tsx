@@ -41,7 +41,7 @@ function ShopFallback() {
         <div className={styles.bar}>
           <p className={styles.count}>{products.length} watches</p>
         </div>
-        <ProductGrid products={products} />
+        <ProductGrid products={products} eager={4} />
       </div>
     </section>
   );

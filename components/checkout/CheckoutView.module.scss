@@ -205,3 +205,11 @@
   justify-content: center;
   gap: $space-3;
 }
+
+.formError {
+  padding: $space-4 $space-5;
+  border: 1px solid rgba($sale, 0.35);
+  background: rgba($sale, 0.05);
+  font-size: $text-sm;
+  color: $sale;
+}

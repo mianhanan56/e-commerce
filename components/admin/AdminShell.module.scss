@@ -1,0 +1,166 @@
+@use "../../styles/tokens" as *;
+
+.shell {
+  min-height: 100vh;
+
+  @include up(lg) {
+    display: grid;
+    grid-template-columns: 15.5rem minmax(0, 1fr);
+  }
+}
+
+.sidebar {
+  display: flex;
+  flex-direction: column;
+  gap: $space-5;
+  padding: $space-5 $gutter;
+  background: $ink;
+  color: $white;
+
+  @include up(lg) {
+    position: sticky;
+    top: 0;
+    height: 100vh;
+    padding: $space-6 $space-5;
+  }
+}
+
+.brand {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: $space-3;
+
+  @include up(lg) {
+    flex-direction: column;
+    padding-bottom: $space-5;
+    border-bottom: 1px solid $line-on-ink;
+  }
+}
+
+.badge {
+  @include eyebrow;
+  font-size: 0.625rem;
+  color: $gold;
+}
+
+.nav {
+  // Phones: a horizontal rail under the brand. Desktop: a vertical list.
+  margin-inline: calc(-1 * #{$gutter});
+  padding-inline: $gutter;
+  overflow-x: auto;
+  scrollbar-width: none;
+
+  &::-webkit-scrollbar {
+    display: none;
+  }
+
+  ul {
+    display: flex;
+    gap: $space-1;
+  }
+
+  @include up(lg) {
+    flex: 1;
+    margin: 0;
+    padding: 0;
+
+    ul {
+      flex-direction: column;
+    }
+  }
+}
+
+.navLink {
+  display: flex;
+  align-items: center;
+  gap: $space-3;
+  min-height: 2.75rem;
+  padding: 0 $space-4;
+  font-size: $text-sm;
+  white-space: nowrap;
+  color: rgba($white, 0.72);
+  transition:
+    background-color $dur-fast $ease,
+    color $dur-fast $ease;
+
+  svg {
+    color: $gold;
+  }
+
+  @include hover {
+    &:hover {
+      color: $white;
+      background: rgba($white, 0.05);
+    }
+  }
+
+  &[aria-current="page"] {
+    color: $white;
+    background: rgba($white, 0.08);
+    box-shadow: inset 2px 0 0 $gold;
+  }
+}
+
+.account {
+  display: none;
+
+  @include up(lg) {
+    display: grid;
+    gap: $space-4;
+    padding-top: $space-5;
+    border-top: 1px solid $line-on-ink;
+  }
+}
+
+.who {
+  font-size: $text-sm;
+  overflow-wrap: anywhere;
+
+  span {
+    display: block;
+    margin-top: $space-1;
+    font-size: $text-xs;
+    color: $muted-on-ink;
+  }
+}
+
+.accountActions {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: $space-3;
+  font-size: $text-xs;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.storeLink {
+  display: inline-flex;
+  align-items: center;
+  gap: $space-1;
+  color: $gold-light;
+}
+
+.signOut {
+  color: $muted-on-ink;
+  letter-spacing: inherit;
+  text-transform: inherit;
+  text-decoration: underline;
+  text-underline-offset: 3px;
+
+  @include hover {
+    &:hover {
+      color: $white;
+    }
+  }
+}
+
+.main {
+  min-width: 0;
+  padding: $space-6 $gutter $space-9;
+
+  @include up(lg) {
+    padding: $space-7 $space-7 $space-9;
+  }
+}
