@@ -409,9 +409,10 @@ export function discountPercent(p: Product) {
 }
 
 // "01", "02"… for collection numbering.
-// Collections have no page of their own: a collection is the shop filtered to it.
+// A collection's page is the shop with that category selected, at its own path so search
+// engines can index it (app/(store)/shop/[category]).
 export function collectionHref(slug: string) {
-  return `/shop?category=${encodeURIComponent(slug)}`;
+  return `/shop/${encodeURIComponent(slug)}`;
 }
 
 export function ordinal(index: number) {

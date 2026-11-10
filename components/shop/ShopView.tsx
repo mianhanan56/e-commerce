@@ -1,5 +1,6 @@
 "use client";
 
+import Link from "next/link";
 import { useRouter, useSearchParams } from "next/navigation";
 import { useMemo } from "react";
 import { useCatalog } from "@/components/catalog/CatalogContext";
@@ -26,25 +27,37 @@ const flags = [
 type Sort = (typeof sorts)[number]["value"];
 type Flag = (typeof flags)[number]["value"];
 
-export function ShopView() {
+// Shop path for a category, keeping the other filters (search, sort, flag) in the query.
+function shopHref(category: string | undefined, query: URLSearchParams) {
+  const qs = query.toString();
+  const path = category ? `/shop/${encodeURIComponent(category)}` : "/shop";
+  return qs ? `${path}?${qs}` : path;
+}
+
+// The category is part of the path (/shop/<slug>), so each one is its own indexable page.
+// Search, sort and the new/sale/bestseller flags stay in the query string.
+export function ShopView({ category }: { category?: string }) {
   const params = useSearchParams();
   const router = useRouter();
   const { products, categories } = useCatalog();
-
-  const category = categories.find((c) => c.slug === params.get("category"))?.slug;
   const q = params.get("q")?.trim() ?? "";
   const sort: Sort = sorts.find((s) => s.value === params.get("sort"))?.value ?? "featured";
   const filter: Flag | undefined = flags.find((f) => f.value === params.get("filter"))?.value;
 
+  // Query without the legacy `?category=` (old links are redirected to /shop/<slug> by proxy.ts).
+  const query = new URLSearchParams(params.toString());
+  query.delete("category");
+
   const update = (patch: Record<string, string | undefined>) => {
-    const next = new URLSearchParams(params.toString());
+    const next = new URLSearchParams(query);
     for (const [key, value] of Object.entries(patch)) {
       if (value) next.set(key, value);
       else next.delete(key);
     }
-    const qs = next.toString();
-    router.replace(qs ? `/shop?${qs}` : "/shop", { scroll: false });
+    router.replace(shopHref(category, next), { scroll: false });
   };
+
+  const clearAll = () => router.push("/shop", { scroll: false });
 
   const results = useMemo(() => {
     let list = q ? searchProducts(products, q) : products;
@@ -74,23 +87,25 @@ export function ShopView() {
         <div className={styles.toolbar}>
           <ul className={styles.chips} aria-label="Filter by category">
             <li>
-              <button
+              <Link
+                href={shopHref(undefined, query)}
+                scroll={false}
                 className={styles.chip}
-                aria-pressed={!category}
-                onClick={() => update({ category: undefined })}
+                aria-current={!category ? "page" : undefined}
               >
                 All
-              </button>
+              </Link>
             </li>
             {categories.map((c) => (
               <li key={c.slug}>
-                <button
+                <Link
+                  href={shopHref(c.slug, query)}
+                  scroll={false}
                   className={styles.chip}
-                  aria-pressed={category === c.slug}
-                  onClick={() => update({ category: c.slug })}
+                  aria-current={category === c.slug ? "page" : undefined}
                 >
                   {c.name}
-                </button>
+                </Link>
               </li>
             ))}
           </ul>
@@ -123,10 +138,7 @@ export function ShopView() {
               )}
             </p>
             {filtered && (
-              <button
-                className={styles.clear}
-                onClick={() => update({ q: undefined, category: undefined, filter: undefined })}
-              >
+              <button className={styles.clear} onClick={clearAll}>
                 <Icon name="close" size={14} /> Clear filters
               </button>
             )}
@@ -165,11 +177,7 @@ export function ShopView() {
               Nothing matches <em>just yet</em>
             </h2>
             <p>Try a different search, or browse the full range.</p>
-            <Button
-              variant="outline"
-              withArrow
-              onClick={() => update({ q: undefined, category: undefined, filter: undefined })}
-            >
+            <Button variant="outline" withArrow onClick={clearAll}>
               View all watches
             </Button>
           </div>

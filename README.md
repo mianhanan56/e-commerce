@@ -56,6 +56,7 @@ npm run dev
 - Spacing: 4px base, `$space-1`…`$space-10`; section padding `$section-y`
 - Breakpoints: 480 / 768 / 1024 / 1280 / 1440, mobile first
 
-Photos in `public/images` are Unsplash placeholders, and the social links, phone number and
-`zarvonique.com` domain are placeholders too. Several show real brand logos
+Photos in `public/images` are Unsplash placeholders, and the social links and phone number
+are placeholders too. The site address (for canonical URLs and the sitemap) defaults to the
+Vercel URL in `lib/seo.ts`; set `NEXT_PUBLIC_SITE_URL` to override it. Several show real brand logos
 (Rolex, MVMT, Fossil) — replace them with your own product photography before launch.

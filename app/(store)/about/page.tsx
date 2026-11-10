@@ -1,4 +1,3 @@
-import type { Metadata } from "next";
 import Image from "next/image";
 import styles from "@/components/about/About.module.scss";
 import { Button } from "@/components/ui/Button";
@@ -6,12 +5,14 @@ import { Icon, type IconName } from "@/components/ui/Icon";
 import { Breadcrumbs } from "@/components/ui/PageHeader";
 import { Reveal } from "@/components/ui/Reveal";
 import { SectionHeading } from "@/components/ui/SectionHeading";
+import { pageMetadata } from "@/lib/seo";
 
-export const metadata: Metadata = {
+export const metadata = pageMetadata({
   title: "About Us",
   description:
     "Zarvonique is a Lahore studio choosing men's watches for character and longevity, delivered free across Pakistan.",
-};
+  path: "/about",
+});
 
 const values: { icon: IconName; title: string; text: string }[] = [
   {

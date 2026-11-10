@@ -1,16 +1,15 @@
-import type { Metadata } from "next";
 import { Suspense } from "react";
-import { ProductGrid } from "@/components/product/ProductGrid";
+import { ShopFallback } from "@/components/shop/ShopFallback";
 import { ShopView } from "@/components/shop/ShopView";
 import { PageHeader } from "@/components/ui/PageHeader";
-import { getCatalog } from "@/lib/catalog";
-import styles from "@/components/shop/ShopView.module.scss";
+import { pageMetadata } from "@/lib/seo";
 
-export const metadata: Metadata = {
-  title: "Shop All Watches",
+export const metadata = pageMetadata({
+  title: "Shop All Men's Watches",
   description:
-    "Every Zarvonique watch in one place. Free delivery across Pakistan, cash on delivery.",
-};
+    "Shop every Zarvonique men's watch: automatic, chronograph, dress, diver and minimalist. Free delivery across Pakistan and cash on delivery.",
+  path: "/shop",
+});
 
 export default function ShopPage() {
   return (
@@ -30,20 +29,5 @@ export default function ShopPage() {
         <ShopView />
       </Suspense>
     </>
-  );
-}
-
-async function ShopFallback() {
-  const { products } = await getCatalog();
-  return (
-    <section className={styles.section} aria-label="Watches">
-      <div className={styles.inner}>
-        <div className={styles.toolbar} />
-        <div className={styles.bar}>
-          <p className={styles.count}>{products.length} watches</p>
-        </div>
-        <ProductGrid products={products} eager={4} />
-      </div>
-    </section>
   );
 }

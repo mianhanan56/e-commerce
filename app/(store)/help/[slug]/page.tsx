@@ -5,6 +5,7 @@ import { HelpContent } from "@/components/help/HelpContent";
 import styles from "@/components/help/Help.module.scss";
 import { PageHeader } from "@/components/ui/PageHeader";
 import { getHelpPage, helpPages } from "@/data/help";
+import { pageMetadata } from "@/lib/seo";
 
 export function generateStaticParams() {
   return helpPages.map((p) => ({ slug: p.slug }));
@@ -12,7 +13,13 @@ export function generateStaticParams() {
 
 export async function generateMetadata({ params }: PageProps<"/help/[slug]">): Promise<Metadata> {
   const page = getHelpPage((await params).slug);
-  return page ? { title: page.title, description: page.intro } : {};
+  if (!page) return {};
+  return pageMetadata({
+    title: page.title,
+    description: page.intro,
+    path: `/help/${page.slug}`,
+    type: "article",
+  });
 }
 
 export default async function HelpPage({ params }: PageProps<"/help/[slug]">) {

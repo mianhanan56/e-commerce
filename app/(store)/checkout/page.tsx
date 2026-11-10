@@ -1,9 +1,9 @@
-import type { Metadata } from "next";
 import { CheckoutView } from "@/components/checkout/CheckoutView";
 import { Container } from "@/components/ui/Container";
 import { PageHeader } from "@/components/ui/PageHeader";
+import { privateMetadata } from "@/lib/seo";
 
-export const metadata: Metadata = { title: "Checkout" };
+export const metadata = privateMetadata("Checkout");
 
 export default function CheckoutPage() {
   return (

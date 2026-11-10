@@ -1,9 +1,9 @@
-import type { Metadata } from "next";
 import { WishlistView } from "@/components/cart/WishlistView";
 import { Container } from "@/components/ui/Container";
 import { PageHeader } from "@/components/ui/PageHeader";
+import { privateMetadata } from "@/lib/seo";
 
-export const metadata: Metadata = { title: "Wishlist" };
+export const metadata = privateMetadata("Wishlist");
 
 export default function WishlistPage() {
   return (

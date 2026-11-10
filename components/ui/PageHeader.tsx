@@ -1,4 +1,6 @@
 import Link from "next/link";
+import { JsonLd } from "@/components/seo/JsonLd";
+import { breadcrumbJsonLd } from "@/lib/seo";
 import styles from "./PageHeader.module.scss";
 
 export type Crumb = { label: string; href?: string };
@@ -29,8 +31,11 @@ export function PageHeader({ eyebrow, title, intro, crumbs, align = "left", chil
 
 export function Breadcrumbs({ crumbs }: { crumbs: Crumb[] }) {
   const all = [{ label: "Home", href: "/" }, ...crumbs];
+  // The last crumb is the current page and is never a link, here or in the structured data.
+  const trail = all.map((c, i) => (i === all.length - 1 ? { label: c.label } : c));
   return (
     <nav aria-label="Breadcrumb" className={styles.crumbs}>
+      <JsonLd data={breadcrumbJsonLd(trail)} />
       <ol>
         {all.map((c, i) => (
           <li key={c.label}>

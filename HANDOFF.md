@@ -1,6 +1,6 @@
 # Handoff — Zarvonique Men's Watches
 
-_Last updated: 2026-11-10 (Zarvonique logo, 5–7 day delivery copy; Supabase host not resolving). Any coding agent should be able
+_Last updated: 2026-11-11 (SEO foundations + /shop/<category> pages; Supabase host not resolving). Any coding agent should be able
 to continue the project from this file. Read `ARCHITECTURE.md`, `PROJECT_STATUS.md` and
 `TODO.md` too. If the files disagree, trust them in this order: source code, ARCHITECTURE,
 PROJECT_STATUS, HANDOFF, TODO._
@@ -72,7 +72,8 @@ that: order notification emails.
 - **Brand is Zarvonique everywhere (user, 2026-11-10):** the old name was removed from titles,
   metadata, copy, help pages, admin, CSV filename, README and CLAUDE.md. localStorage keys are
   now `zarvonique:cart` / `zarvonique:wishlist` (old keys are ignored; dev-only data was lost).
-  Placeholder domain `zarvonique.com` in `metadataBase`. Order numbers: new orders get `ZV-…` once
+  Site origin (`metadataBase`, canonicals, sitemap) is `https://e-commerce-six-pi-26.vercel.app`
+  (default in `lib/seo.ts`, overridable with `NEXT_PUBLIC_SITE_URL`). Order numbers: new orders get `ZV-…` once
   the user runs `supabase/migrations/20261110120000_order_number_prefix.sql` in the SQL Editor
   (not run yet: the project was offline and agents don't write to the DB). Until then the DB still
   issues the old prefix. Existing orders keep their numbers. Placeholders show `ZV-123456`.
@@ -166,6 +167,11 @@ that: order notification emails.
 - No email/WhatsApp notification on new orders yet — the owner must check `/admin`.
 - Subscriber list/export is capped at 1000 rows (PostgREST default max rows).
 - Placeholder photos include real brand logos; domain, phone and social links are placeholders.
+- SEO foundations are in (2026-11-11, see ARCHITECTURE "SEO"). Still open: Search Console
+  not set up yet (see TODO); Organization JSON-LD has no phone or
+  social profiles (placeholders); About page address vs Contact "no address" conflict; claimed
+  "4.9 / 5" rating has no reviews behind it (never put it in structured data).
+- `/shop/<unknown-slug>` returns 200 + `noindex` (same PPR behaviour as unknown products).
 
 ## Supabase project state (2026-11-02)
 
@@ -211,6 +217,10 @@ that: order notification emails.
 
 ## Recommended next step
 
+0. SEO, user side: deploy the SEO work to `main`, then add `https://e-commerce-six-pi-26.vercel.app`
+   as a URL-prefix property in Google Search Console (send the HTML-tag code to an agent to add
+   via `metadata.verification.google`), submit `/sitemap.xml`, test a product in the Rich
+   Results Test. Give real phone/social URLs so they can go into the Organization JSON-LD.
 1. User runs `supabase/migrations/20261103120000_catalog_images.sql` in the SQL Editor.
 2. With the user's OK: on the real project, add/edit/hide/delete a test watch with a photo,
    add/delete an empty collection, place + cancel a test order. Fix anything that differs.

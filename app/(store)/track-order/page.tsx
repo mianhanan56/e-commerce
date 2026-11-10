@@ -1,11 +1,13 @@
-import type { Metadata } from "next";
 import { TrackOrder } from "@/components/track/TrackOrder";
 import { PageHeader } from "@/components/ui/PageHeader";
+import { pageMetadata } from "@/lib/seo";
 
-export const metadata: Metadata = {
+export const metadata = pageMetadata({
   title: "Track Your Order",
-  description: "Check the status of your Zarvonique order with your order number.",
-};
+  description:
+    "Check the status of your Zarvonique order with your order number and phone or email.",
+  path: "/track-order",
+});
 
 export default function TrackOrderPage() {
   return (

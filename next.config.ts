@@ -5,12 +5,13 @@ const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL;
 const nextConfig: NextConfig = {
   cacheComponents: true,
   partialPrefetching: true,
-  // The collection pages were removed (2026-11-10): a collection is now the shop filtered to it.
-  // Temporary redirects keep old links and bookmarks working.
+  // The collection pages were removed (2026-11-10): a collection is now the shop with that
+  // category selected, at /shop/<slug>. Permanent (308) so search engines move any ranking over.
+  // Old /shop?category=<slug> links are redirected by proxy.ts, which can drop the parameter.
   async redirects() {
     return [
-      { source: "/collections", destination: "/shop", permanent: false },
-      { source: "/collections/:slug", destination: "/shop?category=:slug", permanent: false },
+      { source: "/collections", destination: "/shop", permanent: true },
+      { source: "/collections/:slug", destination: "/shop/:slug", permanent: true },
     ];
   },
   images: {

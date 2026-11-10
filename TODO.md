@@ -1,6 +1,6 @@
 # TODO — Zarvonique
 
-_Last updated: 2026-11-10. Record finished tasks in `PROJECT_STATUS.md` before removing them._
+_Last updated: 2026-11-11. Record finished tasks in `PROJECT_STATUS.md` before removing them._
 
 ## High
 
@@ -35,8 +35,19 @@ _Last updated: 2026-11-10. Record finished tasks in `PROJECT_STATUS.md` before r
 - [ ] **Replace placeholder product and editorial photos.** Status: Pending.
       Some images in `public/images` show real brand logos (Rolex, MVMT, Fossil).
 - [ ] **Replace placeholder business details.** Status: Pending.
-      `zarvonique.com` placeholder domain (`metadataBase` in `app/layout.tsx`), phone number,
-      social links.
+      Phone number, social links. (Domain: the site uses the Vercel address until a custom
+      domain is bought.)
+
+- [ ] **SEO: Search Console + sitemap.** Status: Pending (user action). Site origin is
+      `https://e-commerce-six-pi-26.vercel.app` (default in `lib/seo.ts`, 2026-11-11). Deploy the
+      SEO work to `main`, add a URL-prefix property in Google Search Console (HTML-tag
+      verification: add the code via `metadata.verification.google` in `app/layout.tsx`), submit
+      `/sitemap.xml`, check a product in the Rich Results Test. If a custom domain is bought:
+      set `NEXT_PUBLIC_SITE_URL` in Vercel (Config type) and redeploy.
+- [ ] **SEO: consistent business details.** Status: Pending (user decision). About page shows a
+      Lahore studio address and Mon–Sat hours; Contact/footer show no address and 24/7. Phone and
+      social links are placeholders, so `lib/seo.ts` `organizationJsonLd()` omits `telephone`/
+      `sameAs` (add them when real). "Rated 4.9 / 5" (Hero, About) has no reviews behind it.
 
 ## Medium
 
@@ -52,6 +63,11 @@ _Last updated: 2026-11-10. Record finished tasks in `PROJECT_STATUS.md` before r
 
 ## Low
 
+- [ ] **SEO content.** Status: Pending. Longer product copy, customer reviews (then
+      `aggregateRating` in Product JSON-LD), guides ("best watches under Rs 20,000", case-size
+      guide), FAQPage JSON-LD on `/help/faq` (rich results limited, still read by Bing/AI).
+- [ ] **`Reveal` hides content until JS runs** (`opacity: 0`). Status: Pending. Google renders JS,
+      but a no-JS/CSS-only fallback would be safer.
 - [ ] **Subscriber list/export beyond 1000 rows.** Status: Pending. Page through PostgREST
       ranges in `app/admin/(portal)/subscribers/export/route.ts`.
 - [ ] **Courier API integration** (PostEx/Trax booking + tracking). Status: Pending.

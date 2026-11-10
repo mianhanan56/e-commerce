@@ -39,7 +39,7 @@ export function CollectionsTable({ collections }: { collections: Collection[] })
                     <Link href={`/admin/collections/${c.slug}`} className={styles.name}>
                       {c.name}
                     </Link>
-                    <span className={styles.id}>/shop?category={c.slug}</span>
+                    <span className={styles.id}>/shop/{c.slug}</span>
                   </span>
                 </div>
               </td>

@@ -1,6 +1,6 @@
 # Architecture — Zarvonique Men's Watches
 
-_Last updated: 2026-11-10 (Zarvonique logo component)_
+_Last updated: 2026-11-11 (SEO: metadata helper, JSON-LD, sitemap/robots, /shop/[category])_
 
 ## Overview
 
@@ -49,9 +49,12 @@ caching or data APIs (see `AGENTS.md`).
 
 ```
 proxy.ts                  (Next 16 "middleware") refreshes the Supabase session on /admin/*,
-                          redirects signed-out visitors to /admin/login
+                          redirects signed-out visitors to /admin/login; also 308-redirects
+                          legacy /shop?category=<slug> to /shop/<slug> (matcher `has` query only)
 app/
-  layout.tsx              <html>/<body>, fonts, base metadata ONLY (no store chrome)
+  layout.tsx              <html lang="en-PK">/<body>, fonts, base metadata ONLY (no store chrome):
+                          metadataBase = SITE_URL, title template, default OG/Twitter
+  robots.ts sitemap.ts    robots.txt (disallow /admin only) and sitemap.xml (from getCatalog())
   globals.scss            Reset, base typography, body.isLocked
   favicon.ico icon.svg apple-icon.png   Zarvonique "Z" dial (Next file-convention icons)
   not-found.tsx           404, wrapped in <StoreShell>
@@ -116,19 +119,22 @@ public/images/            Unsplash placeholder photos (c-* categories, p-* produ
 
 ## Routes
 
-| Route                                 | Rendering                      | Notes                                                          |
-| ------------------------------------- | ------------------------------ | -------------------------------------------------------------- |
-| `/`                                   | Static                         | Hero, Benefits, FeaturedWatches (first 8 watches), WhyChooseUs |
-| `/shop`                               | Static shell + client filters  | `?category=`, `?q=`, `?sort=`, `?filter=new\|sale\|bestseller` |
-| `/collections`, `/collections/[slug]` | 307 redirect (next.config.ts)  | → `/shop`, `/shop?category=<slug>` (pages removed 2026-11-10)  |
-| `/products/[id]`                      | Static / PPR                   | Ids from `getCatalog()`; new ids render on demand (ISR)        |
-| `/cart`, `/wishlist`                  | Static shell, client state     | Reads `localStorage` after hydration                           |
-| `/checkout`                           | Static shell, client state     | Submits via `placeOrder` server action → `create_order`        |
-| `/track-order`                        | Static shell                   | `trackOrder` action → `track_order` (number + phone/email)     |
-| `/about`, `/contact`                  | Static                         | Contact form → `submitContact` → `submit_contact`              |
-| `/admin/login`                        | Request time                   | Supabase email/password; must have a row in `admins`           |
-| `/admin/*` (portal)                   | Request time (`instant=false`) | Guarded by proxy.ts + `requireAdmin()` + RLS                   |
-| `/help/[slug]`                        | Static / PPR                   | Content from `data/help.ts`                                    |
+| Route                                 | Rendering                      | Notes                                                                                          |
+| ------------------------------------- | ------------------------------ | ---------------------------------------------------------------------------------------------- |
+| `/`                                   | Static                         | Hero, Benefits, FeaturedWatches (first 8 watches), WhyChooseUs                                 |
+| `/shop`                               | Static shell + client filters  | `?q=`, `?sort=`, `?filter=new\|sale\|bestseller` (canonical `/shop`)                           |
+| `/shop/[category]`                    | Static / PPR                   | Same ShopView with the category from the path; own title, intro, story, CollectionPage JSON-LD |
+| `/shop?category=<slug>`               | 308 (proxy.ts)                 | → `/shop/<slug>`, other params kept                                                            |
+| `/collections`, `/collections/[slug]` | 308 redirect (next.config.ts)  | → `/shop`, `/shop/<slug>` (pages removed 2026-11-10)                                           |
+| `/robots.txt`, `/sitemap.xml`         | Static (metadata routes)       | `app/robots.ts`, `app/sitemap.ts`                                                              |
+| `/products/[id]`                      | Static / PPR                   | Ids from `getCatalog()`; new ids render on demand (ISR)                                        |
+| `/cart`, `/wishlist`                  | Static shell, client state     | Reads `localStorage` after hydration                                                           |
+| `/checkout`                           | Static shell, client state     | Submits via `placeOrder` server action → `create_order`                                        |
+| `/track-order`                        | Static shell                   | `trackOrder` action → `track_order` (number + phone/email)                                     |
+| `/about`, `/contact`                  | Static                         | Contact form → `submitContact` → `submit_contact`                                              |
+| `/admin/login`                        | Request time                   | Supabase email/password; must have a row in `admins`                                           |
+| `/admin/*` (portal)                   | Request time (`instant=false`) | Guarded by proxy.ts + `requireAdmin()` + RLS                                                   |
+| `/help/[slug]`                        | Static / PPR                   | Content from `data/help.ts`                                                                    |
 
 ## Data model (`data/catalog.ts` types, rows from Supabase)
 
@@ -182,6 +188,29 @@ pieces", "Five ways…") is now count-free.
 Orders live in Supabase (see "Backend"). Order numbers are `ZV-100001`, `ZV-100002`… (migration `20261110120000_order_number_prefix.sql`; orders before it keep the old prefix) from a
 database sequence.
 
+## SEO (`lib/seo.ts`, `components/seo/JsonLd.tsx`)
+
+- **Origin:** `SITE_URL` = `NEXT_PUBLIC_SITE_URL` or the Vercel address `https://e-commerce-six-pi-26.vercel.app`.
+  Feeds `metadataBase`, canonicals, sitemap, robots and JSON-LD. Set the env var in Vercel only for a custom domain.
+- **Every indexable store page** exports `pageMetadata({ title, description, path, image? })`:
+  title, description, `alternates.canonical` (path without query, so `?sort=`/`?q=`/`?filter=`
+  variants collapse onto one URL), full `openGraph` and `twitter`. Why a helper: Next merges
+  metadata _shallowly_, so a page that sets `openGraph` replaces the root's whole object.
+  The homepage uses `absoluteTitle` (skips the `%s — Zarvonique` template).
+- **Bag, checkout, wishlist** use `privateMetadata()` → `noindex, follow`. They are NOT
+  disallowed in robots.txt (a blocked crawler can't see `noindex`). Only `/admin` is disallowed.
+- **JSON-LD:** `OnlineStore` + `WebSite` on the homepage; `Product` (Offer with PKR price,
+  availability from `stock`, free shipping 5–7 days, 7-day exchange return policy) on product
+  pages; `CollectionPage` + `ItemList` on category pages; `BreadcrumbList` emitted by the
+  `Breadcrumbs` component itself, so every page with breadcrumbs has it. No `telephone`/`sameAs`
+  and no ratings until real ones exist.
+- **Social image:** `public/og-image.jpg` (1200×630 brand card, logo on black). Products and
+  categories use their own photo. Don't use the hero photo: it shows a Rolex logo.
+- **Category URLs:** `/shop/<slug>` (`collectionHref()`), chips in ShopView are `<Link>`s so
+  crawlers follow them. The server fallback (`components/shop/ShopFallback.tsx`) lists that
+  category's products, which is the HTML crawlers index (ShopView itself is client-rendered
+  because it reads `useSearchParams`).
+
 ## State management
 
 - `lib/persisted.ts`: `createPersistedStore(key, initial)` is a module-level store backed by
@@ -220,9 +249,11 @@ database sequence.
   4rem stacked, footer 10.5rem stacked, login 9rem stacked, admin sidebar 1.875rem inline).
   `surface="dark"` is the artwork's gold; `light` is a deeper gold for cream/white. Gradient ids
   come from `useId()` because several logos render on one page.
-- Collections have no store pages: `collectionHref(slug)` in `data/catalog.ts` returns
-  `/shop?category=<slug>`, used by footer, home Categories, search, product breadcrumb/eyebrow
-  and the admin "View" links. Collections are still managed in `/admin/collections`.
+- A collection's store page is the shop with that category selected: `collectionHref(slug)` in
+  `data/catalog.ts` returns `/shop/<slug>` (since 2026-11-11; was `/shop?category=<slug>`), used
+  by footer, search, product breadcrumb/eyebrow and the admin "View" links. Collections are
+  still managed in `/admin/collections`; a category's `description` is the page intro and meta
+  description, its `story` the "About our … watches" block, its `image` the share image.
 
 ## Coding conventions
 

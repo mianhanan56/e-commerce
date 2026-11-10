@@ -2,9 +2,25 @@ import { createServerClient } from "@supabase/ssr";
 import { NextResponse, type NextRequest } from "next/server";
 import { isSupabaseConfigured, supabaseKey, supabaseUrl } from "@/lib/supabase/env";
 
-// Refreshes the admin's Supabase session cookie and turns signed-out visitors away early.
+// /shop?category=<slug> was the category URL until 2026-11-11. Those links (bookmarks, shared
+// links, anything already indexed) now go permanently to /shop/<slug>, keeping the other
+// filters. next.config redirects can't do this: they pass the old parameter through.
+function legacyCategoryRedirect(request: NextRequest) {
+  const slug = request.nextUrl.searchParams.get("category");
+  if (slug === null) return null;
+  const url = request.nextUrl.clone();
+  url.searchParams.delete("category");
+  if (slug) url.pathname = `/shop/${encodeURIComponent(slug)}`;
+  return NextResponse.redirect(url, 308);
+}
+
+// Admin: refreshes the Supabase session cookie and turns signed-out visitors away early.
 // The authoritative admin check is requireAdmin() in the portal layout and every action.
 export async function proxy(request: NextRequest) {
+  if (request.nextUrl.pathname === "/shop") {
+    return legacyCategoryRedirect(request) ?? NextResponse.next();
+  }
+
   let response = NextResponse.next({ request });
   if (!isSupabaseConfigured()) return response;
 
@@ -33,5 +49,10 @@ export async function proxy(request: NextRequest) {
 }
 
 export const config = {
-  matcher: ["/admin", "/admin/:path*"],
+  matcher: [
+    "/admin",
+    "/admin/:path*",
+    // Only old category links: a plain /shop visit never runs the proxy.
+    { source: "/shop", has: [{ type: "query", key: "category" }] },
+  ],
 };

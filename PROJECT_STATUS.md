@@ -1,6 +1,6 @@
 # Project Status — Zarvonique
 
-_Last updated: 2026-11-10_
+_Last updated: 2026-11-11_
 
 ## Current milestone
 
@@ -47,6 +47,16 @@ end-to-end run on real Supabase still pending. M1 (design-phase storefront) is d
   filtered shop; old URLs redirect. **Header redesigned around the logo:** black, full stacked
   Zarvonique logo in the artwork's gold.
 
+- **SEO foundations (2026-11-11):** `robots.txt`, `sitemap.xml` (products + categories from the
+  catalogue), canonical URLs, full Open Graph/Twitter tags on every page (`lib/seo.ts`
+  `pageMetadata`), `noindex` on bag/checkout/wishlist, JSON-LD (OnlineStore + WebSite, Product
+  with offer/shipping/returns, CollectionPage, BreadcrumbList), 1200×630 share image
+  `public/og-image.jpg`, keyword titles ("Noir Automatic — Men's Business Watch"),
+  `lang="en-PK"`.
+- **Indexable category pages `/shop/<slug>` (2026-11-11):** same shop UI with the category
+  selected, but server-rendered with its own title, intro, story block and product list. Chips
+  are links. `/shop?category=` and `/collections/*` now 308 to them.
+
 ## In progress
 
 - Nothing mid-edit. User: run `supabase/migrations/20261103120000_catalog_images.sql` (photo
@@ -68,7 +78,7 @@ order notifications, placeholder content, tests, deploy configuration.
 
 ## Build status
 
-- `next build` passes (2026-11-02), 50 pages. `/admin/*` render per request (`ƒ`).
+- `next build` passes (2026-11-11), 58 pages incl. robots.txt, sitemap.xml and 5 `/shop/<slug>`. `/admin/*` render per request (`ƒ`).
 
 ## Deployment status
 
@@ -80,6 +90,15 @@ order notifications, placeholder content, tests, deploy configuration.
   Secret) variables, then a redeploy.
 
 ## Recent progress
+
+- 2026-11-11: SEO work (see Completed). Checked on a production build (`next start -p 3002`,
+  sample catalogue because Supabase is unreachable): robots/sitemap content; title, description,
+  canonical, og:*, twitter on home, shop, all page types; JSON-LD parses (Product price PKR +
+  InStock, CollectionPage items, breadcrumbs); bag/checkout/wishlist `noindex, follow`;
+  `/shop/sports` HTML lists only its 3 watches; redirects 308 (`/shop?category=sports&sort=…` →
+  `/shop/sports?sort=…`). Headless Chrome 1440 + 375: chip links navigate, flags/sort keep the
+  path, "All" returns to `/shop`, no console errors. Fixed a pre-existing 12px horizontal scroll
+  on `/shop` under ~390px (`.refine { min-width: 0 }`). tsc, lint, prettier (changed files), build pass.
 
 - 2026-10-30: Created the project with Create Next App.
 - 2026-11-02: Commit `d64d808` built the full storefront.

@@ -56,7 +56,7 @@ export function CollectionForm({ category }: { category?: CategoryRow }) {
                   Web address
                 </label>
                 <div className={styles.prefixed}>
-                  <span>/shop?category=</span>
+                  <span>/shop/</span>
                   <input
                     id="cf-slug"
                     name="slug"

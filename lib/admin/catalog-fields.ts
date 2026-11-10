@@ -2,7 +2,7 @@ import type { Product } from "@/data/catalog";
 
 // Shared by the admin catalogue forms (client) and lib/actions/catalog.ts (server).
 
-// Product ids and collection slugs are URL segments: /products/<id>, /shop?category=<slug>.
+// Product ids and collection slugs are URL segments: /products/<id>, /shop/<slug>.
 // Same rule as the database check constraint; "new" is taken by the admin's add pages.
 export const SLUG_PATTERN = /^[a-z0-9]+(?:-[a-z0-9]+)*$/;
 export const RESERVED_SLUGS = ["new"];

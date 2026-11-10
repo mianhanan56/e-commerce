@@ -1,4 +1,3 @@
-import type { Metadata } from "next";
 import Link from "next/link";
 import { ContactForm } from "@/components/contact/ContactForm";
 import styles from "@/components/contact/Contact.module.scss";
@@ -7,11 +6,14 @@ import { Icon, type IconName } from "@/components/ui/Icon";
 import { PageHeader } from "@/components/ui/PageHeader";
 import { Reveal } from "@/components/ui/Reveal";
 import { faqs } from "@/data/help";
+import { pageMetadata } from "@/lib/seo";
 
-export const metadata: Metadata = {
-  title: "Contact",
-  description: "Reach Zarvonique by phone, WhatsApp or email, 24 hours a day, every day.",
-};
+export const metadata = pageMetadata({
+  title: "Contact Us",
+  description:
+    "Reach Zarvonique by phone, WhatsApp or email, 24 hours a day, every day. Questions about a watch, an order or a gift.",
+  path: "/contact",
+});
 
 const channels: { icon: IconName; label: string; value: string; href?: string; note?: string }[] = [
   { icon: "phone", label: "Phone", value: "+92 300 000 0000", href: "tel:+923000000000" },
