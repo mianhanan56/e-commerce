@@ -1,5 +1,7 @@
 "use server";
 
+import { revalidateTag } from "next/cache";
+import { CATALOG_TAG } from "@/lib/catalog";
 import {
   friendlyDbError,
   validateCheckout,
@@ -61,6 +63,8 @@ export async function placeOrder(input: PlaceOrderInput): Promise<PlaceOrderResu
     }
     return { ok: false, error: friendlyDbError(error?.message, error?.details) };
   }
+  // Stock changed: refresh "sold out" labels in the background.
+  revalidateTag(CATALOG_TAG, "max");
   return { ok: true, orderNumber: data[0].order_number, total: data[0].total };
 }
 

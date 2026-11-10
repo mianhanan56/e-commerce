@@ -1,13 +1,14 @@
 "use client";
 
 import { useCart } from "@/components/cart/CartContext";
+import { useCatalog } from "@/components/catalog/CatalogContext";
 import { ProductGrid } from "@/components/product/ProductGrid";
 import { EmptyState, LoadingState } from "@/components/ui/EmptyState";
-import { products } from "@/data/catalog";
 import styles from "./WishlistView.module.scss";
 
 export function WishlistView() {
   const { wishlist, hydrated } = useCart();
+  const { products } = useCatalog();
 
   if (!hydrated) return <LoadingState />;
 

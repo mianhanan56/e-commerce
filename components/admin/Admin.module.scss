@@ -225,6 +225,11 @@
   font-size: $text-sm;
   transition: border-color $dur-fast $ease;
 
+  &::placeholder {
+    color: $muted;
+    opacity: 0.6;
+  }
+
   &:focus,
   &:focus-visible {
     outline: none;
@@ -290,4 +295,14 @@
   code {
     font-size: 0.85em;
   }
+}
+
+// Confirmation after a redirect (e.g. "Added …", "Deleted …").
+.flash {
+  max-width: 40rem;
+  padding: $space-4 $space-5;
+  background: #e9f4ea;
+  border: 1px solid rgba(#2f6b34, 0.3);
+  color: #2f6b34;
+  font-size: $text-sm;
 }

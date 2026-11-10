@@ -4,8 +4,9 @@ import Image from "next/image";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useEffect, useRef, useState } from "react";
+import { useCatalog } from "@/components/catalog/CatalogContext";
 import { Icon } from "@/components/ui/Icon";
-import { categories, formatPKR, searchProducts } from "@/data/catalog";
+import { collectionHref, formatPKR, searchProducts } from "@/data/catalog";
 import { useBodyLock } from "@/lib/useBodyLock";
 import styles from "./SearchDialog.module.scss";
 
@@ -13,9 +14,10 @@ const suggestions = ["Automatic", "Chronograph", "Leather", "Gold", "Diver"];
 
 export function SearchDialog({ open, onClose }: { open: boolean; onClose: () => void }) {
   const router = useRouter();
+  const { products, categories } = useCatalog();
   const inputRef = useRef<HTMLInputElement>(null);
   const [query, setQuery] = useState("");
-  const results = searchProducts(query);
+  const results = searchProducts(products, query);
   const trimmed = query.trim();
 
   useBodyLock(open, onClose);
@@ -76,15 +78,11 @@ export function SearchDialog({ open, onClose }: { open: boolean; onClose: () => 
                 </ul>
               </div>
               <div>
-                <p className={styles.label}>Collections</p>
+                <p className={styles.label}>Categories</p>
                 <ul className={styles.chips}>
                   {categories.map((c) => (
                     <li key={c.slug}>
-                      <Link
-                        href={`/collections/${c.slug}`}
-                        className={styles.chip}
-                        onClick={onClose}
-                      >
+                      <Link href={collectionHref(c.slug)} className={styles.chip} onClick={onClose}>
                         {c.name}
                       </Link>
                     </li>

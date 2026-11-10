@@ -37,7 +37,7 @@ export function WhyChooseUs() {
               eyebrow="Our Promise"
               title={
                 <>
-                  Why Choose <em>WAQT</em>
+                  Why Choose <em>Zarvonique</em>
                 </>
               }
             />

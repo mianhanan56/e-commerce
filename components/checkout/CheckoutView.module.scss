@@ -68,7 +68,7 @@
 
   @include up(lg) {
     position: sticky;
-    top: calc(5.25rem + #{$space-5});
+    top: calc(#{$header-h-xl} + #{$space-5});
   }
 }
 

@@ -1,4 +1,4 @@
-# WAQT — Men's Watches
+# Zarvonique — Men's Watches
 
 Men's watch store for Pakistan with an admin portal, in one Next.js 16 app. Orders, contact
 messages and newsletter sign-ups are stored in **Supabase**; the admin portal at `/admin`
@@ -57,5 +57,5 @@ npm run dev
 - Breakpoints: 480 / 768 / 1024 / 1280 / 1440, mobile first
 
 Photos in `public/images` are Unsplash placeholders, and the social links, phone number and
-`waqt.pk` domain are placeholders too. Several show real brand logos
+`zarvonique.com` domain are placeholders too. Several show real brand logos
 (Rolex, MVMT, Fossil) — replace them with your own product photography before launch.

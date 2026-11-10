@@ -9,7 +9,7 @@ import { OrderSummary } from "./OrderSummary";
 import styles from "./CartView.module.scss";
 
 const assurances: { icon: IconName; text: string }[] = [
-  { icon: "truck", text: "Free delivery in 2–4 working days" },
+  { icon: "truck", text: "Free delivery in 5–7 working days" },
   { icon: "cash", text: "Pay with cash when it arrives" },
   { icon: "returns", text: "7-day exchange on every watch" },
   { icon: "shield", text: "1-year movement warranty" },
@@ -25,7 +25,7 @@ export function CartView() {
       <EmptyState
         icon="bag"
         title="Your bag is empty"
-        text="Nothing here yet. Start with our best sellers or browse by collection."
+        text="Nothing here yet. Start with our best sellers or browse all our watches."
         action={{ label: "Shop Watches", href: "/shop" }}
       />
     );

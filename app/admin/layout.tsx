@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import styles from "@/components/admin/Admin.module.scss";
 
 export const metadata: Metadata = {
-  title: { default: "Admin", template: "%s — WAQT Admin" },
+  title: { default: "Admin", template: "%s — Zarvonique Admin" },
   robots: { index: false, follow: false },
 };
 

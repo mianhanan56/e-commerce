@@ -180,10 +180,16 @@
     color $dur $ease;
 
   @include hover {
-    &:hover {
+    &:hover:not(:disabled) {
       background: $gold;
       color: $ink;
     }
+  }
+
+  &:disabled {
+    background: $muted;
+    border-color: $muted;
+    cursor: not-allowed;
   }
 }
 

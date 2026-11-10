@@ -10,7 +10,7 @@ import { SectionHeading } from "@/components/ui/SectionHeading";
 export const metadata: Metadata = {
   title: "About Us",
   description:
-    "WAQT is a Lahore studio choosing men's watches for character and longevity, delivered free across Pakistan.",
+    "Zarvonique is a Lahore studio choosing men's watches for character and longevity, delivered free across Pakistan.",
 };
 
 const values: { icon: IconName; title: string; text: string }[] = [
@@ -83,11 +83,12 @@ export default function AboutPage() {
           </div>
           <p className={styles.eyebrow}>Our Story · Est. Lahore</p>
           <h1 id="about-title" className={styles.heroTitle}>
-            Waqt means <em>time</em>
+            Made to keep <em>time</em>
           </h1>
           <p className={styles.lede}>
-            We started WAQT with a simple belief: a good watch is the one thing a man wears every
-            day, so it should be chosen with care — and it shouldn&apos;t cost a fortune to own.
+            We started Zarvonique with a simple belief: a good watch is the one thing a man wears
+            every day, so it should be chosen with care — and it shouldn&apos;t cost a fortune to
+            own.
           </p>
         </div>
       </section>
@@ -102,9 +103,9 @@ export default function AboutPage() {
           </Reveal>
           <Reveal className={styles.storyText} delay={1}>
             <p>
-              WAQT began in 2021 at a borrowed desk in Gulberg, with a dozen watches and a WhatsApp
-              number. Friends kept asking where to buy something well made that didn&apos;t shout —
-              a watch for the office that could also go to a mehndi.
+              Zarvonique began in 2021 at a borrowed desk in Gulberg, with a dozen watches and a
+              WhatsApp number. Friends kept asking where to buy something well made that didn&apos;t
+              shout — a watch for the office that could also go to a mehndi.
             </p>
             <p>
               We couldn&apos;t find the answer in Pakistan, so we built it: an edited range of
@@ -112,7 +113,7 @@ export default function AboutPage() {
               to your door with cash on delivery.
             </p>
             <p>
-              Five years on, the desk is a studio and the dozen watches are a collection — but the
+              Five years on, the desk is a studio and the dozen watches are a full range — but the
               range is still short on purpose. We would rather sell you one watch you wear for
               twenty years than five you forget in a drawer.
             </p>
@@ -184,7 +185,7 @@ export default function AboutPage() {
         </div>
       </section>
 
-      <section className={styles.stats} aria-label="WAQT in numbers">
+      <section className={styles.stats} aria-label="Zarvonique in numbers">
         <dl className={styles.statGrid}>
           {stats.map((s, i) => (
             <Reveal key={s.label} delay={i as 0 | 1 | 2 | 3} className={styles.stat}>
@@ -213,11 +214,11 @@ export default function AboutPage() {
             </h2>
             <p className={styles.visitText}>
               Studio 4, MM Alam Road, Gulberg III, Lahore. Open Monday to Saturday, 10am to 8pm.
-              Come for a coffee, try the collection on and have your bracelet sized while you wait.
+              Come for a coffee, try the watches on and have your bracelet sized while you wait.
             </p>
             <div className={styles.ctas}>
               <Button href="/shop" variant="dark" withArrow>
-                Shop the Collection
+                Shop Watches
               </Button>
               <Button href="/contact" variant="outline">
                 Plan a Visit

@@ -15,7 +15,9 @@ The store and admin portal use one Supabase project. The schema lives in
 Either paste into **SQL Editor** and run, in this order:
 
 1. `migrations/20261102120000_init.sql`
-2. `seed.sql`
+2. `migrations/20261103120000_catalog_images.sql` (photo storage for the admin; safe to re-run)
+3. `migrations/20261110120000_order_number_prefix.sql` (new orders numbered `ZV-…`; safe to re-run)
+3. `seed.sql`
 
 or, with the Supabase CLI:
 
@@ -73,11 +75,11 @@ result shapes (`TrackedOrder`, `DashboardStats`).
 
 ## How access works
 
-| Who                        | Can do                                                                                                                                           |
-| -------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------ |
-| Visitors (publishable key) | Read active products/categories; call `create_order`, `track_order` (needs number **and** phone/email), `submit_contact`, `subscribe_newsletter` |
-| Signed-in non-admin        | Nothing beyond visitors                                                                                                                          |
-| Admin (row in `admins`)    | Read/update orders, messages, products; read subscribers. Orders can't be deleted — cancel instead (returns stock)                               |
+| Who                        | Can do                                                                                                                                                                        |
+| -------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Visitors (publishable key) | Read active products/categories; call `create_order`, `track_order` (needs number **and** phone/email), `submit_contact`, `subscribe_newsletter`                              |
+| Signed-in non-admin        | Nothing beyond visitors                                                                                                                                                       |
+| Admin (row in `admins`)    | Read/update orders and messages; add/edit/delete products and collections and upload their photos; read subscribers. Orders can't be deleted — cancel instead (returns stock) |
 
 Every status, payment and shipping change is written to `order_events` by a trigger,
 with the admin who made it.

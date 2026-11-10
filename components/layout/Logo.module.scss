@@ -1,0 +1,41 @@
+@use "../../styles/tokens" as *;
+
+.logo {
+  display: block;
+  flex: none;
+  width: auto;
+}
+
+.inline {
+  height: var(--logo-height, 2rem);
+}
+
+.stacked {
+  height: var(--logo-height, 10rem);
+}
+
+// The golds of the supplied artwork, which was drawn on black.
+.dark {
+  --logo-from: #{$brand-gold-light};
+  --logo-mid: #{$brand-gold};
+  --logo-to: #{$brand-gold-deep};
+}
+
+// The same gradient taken deeper: the artwork's gold washes out on paper and white.
+.light {
+  --logo-from: #a8843a;
+  --logo-mid: #8a6a2b;
+  --logo-to: #6f5320;
+}
+
+.from {
+  stop-color: var(--logo-from);
+}
+
+.mid {
+  stop-color: var(--logo-mid);
+}
+
+.to {
+  stop-color: var(--logo-to);
+}

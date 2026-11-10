@@ -5,7 +5,7 @@ import Link from "next/link";
 import { useState } from "react";
 import { useCart } from "@/components/cart/CartContext";
 import { Icon } from "@/components/ui/Icon";
-import { discountPercent, formatPKR, type Product } from "@/data/catalog";
+import { discountPercent, formatPKR, isSoldOut, type Product } from "@/data/catalog";
 import styles from "./ProductCard.module.scss";
 
 export function ProductCard({ product, eager = false }: { product: Product; eager?: boolean }) {
@@ -13,6 +13,7 @@ export function ProductCard({ product, eager = false }: { product: Product; eage
   const [added, setAdded] = useState(false);
   const saved = isWishlisted(product.id);
   const off = discountPercent(product);
+  const soldOut = isSoldOut(product);
   const href = `/products/${product.id}`;
 
   const onAdd = () => {
@@ -35,7 +36,9 @@ export function ProductCard({ product, eager = false }: { product: Product; eage
           />
         </Link>
 
-        {off > 0 ? (
+        {soldOut ? (
+          <span className={styles.badge}>Sold out</span>
+        ) : off > 0 ? (
           <span className={styles.badge}>−{off}%</span>
         ) : (
           product.isNew && <span className={styles.badge}>New</span>
@@ -52,10 +55,12 @@ export function ProductCard({ product, eager = false }: { product: Product; eage
           <Icon name="heart" size={20} />
         </button>
 
-        <button className={styles.add} onClick={onAdd} aria-label={`Add ${product.name} to cart`}>
-          <Icon name={added ? "bag" : "plus"} size={18} />
-          <span>{added ? "Added to bag" : "Add to bag"}</span>
-        </button>
+        {!soldOut && (
+          <button className={styles.add} onClick={onAdd} aria-label={`Add ${product.name} to cart`}>
+            <Icon name={added ? "bag" : "plus"} size={18} />
+            <span>{added ? "Added to bag" : "Add to bag"}</span>
+          </button>
+        )}
       </div>
 
       <div className={styles.info}>

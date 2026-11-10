@@ -21,7 +21,7 @@ export function Hero() {
       </div>
 
       <div className={styles.content}>
-        <p className={styles.eyebrow}>Autumn / Winter 2026 Collection</p>
+        <p className={styles.eyebrow}>Autumn / Winter 2026</p>
         <h1 id="hero-title" className={styles.title}>
           More Than <em>Just</em> a Watch
         </h1>
@@ -31,7 +31,7 @@ export function Hero() {
         </p>
         <div className={styles.ctas}>
           <Button href="/shop" withArrow>
-            Explore Collection
+            Explore Watches
           </Button>
           <Button href="/about" variant="outlineLight">
             Discover Our Story

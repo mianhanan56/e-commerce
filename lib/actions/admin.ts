@@ -1,8 +1,9 @@
 "use server";
 
-import { refresh } from "next/cache";
+import { refresh, revalidateTag } from "next/cache";
 import { redirect } from "next/navigation";
 import { requireAdmin } from "@/lib/admin/auth";
+import { CATALOG_TAG } from "@/lib/catalog";
 import { COURIERS, friendlyDbError, ORDER_STATUSES, PAYMENT_STATUS_LABEL } from "@/lib/orders";
 import { isSupabaseConfigured } from "@/lib/supabase/env";
 import { createSessionClient } from "@/lib/supabase/server";
@@ -121,6 +122,8 @@ export async function updateOrder(orderId: string, patch: OrderPatch): Promise<A
   }
   if (!data?.length) return { ok: false, error: "Order not found." };
 
+  // Cancelling returns stock, which the store shows as "sold out" or not.
+  if (update.status === "cancelled") revalidateTag(CATALOG_TAG, "max");
   refresh();
   return { ok: true };
 }

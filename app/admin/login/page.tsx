@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import { redirect } from "next/navigation";
 import { LoginForm } from "@/components/admin/LoginForm";
-import { Wordmark } from "@/components/layout/Wordmark";
+import { Logo } from "@/components/layout/Logo";
 import { getAdmin } from "@/lib/admin/auth";
 import { isSupabaseConfigured } from "@/lib/supabase/env";
 import ui from "@/components/admin/Admin.module.scss";
@@ -18,7 +18,7 @@ export default async function AdminLoginPage() {
   return (
     <div className={styles.page}>
       <div className={styles.panel}>
-        <Wordmark />
+        <Logo layout="stacked" />
         <h1 className={styles.title}>Admin sign in</h1>
         {isSupabaseConfigured() ? (
           <LoginForm />

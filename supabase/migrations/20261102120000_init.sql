@@ -1,4 +1,4 @@
--- WAQT initial schema: catalogue, orders, customer messages and admin access.
+-- Zarvonique initial schema: catalogue, orders, customer messages and admin access.
 --
 -- Access model
 --   * The public site uses the publishable key only. It can read active products and
@@ -110,7 +110,7 @@ create sequence public.order_number_seq start 100001;
 
 create table public.orders (
   id uuid primary key default gen_random_uuid(),
-  order_number text not null unique default ('WQ-' || nextval('public.order_number_seq')),
+  order_number text not null unique default ('ZV-' || nextval('public.order_number_seq')),
   status public.order_status not null default 'pending',
   payment_method public.payment_method not null,
   payment_status public.payment_status not null default 'unpaid',

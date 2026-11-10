@@ -17,10 +17,10 @@ const sans = Jost({
 
 export const metadata: Metadata = {
   // Placeholder domain — set to the production URL before launch.
-  metadataBase: new URL("https://waqt.pk"),
+  metadataBase: new URL("https://zarvonique.com"),
   title: {
-    default: "WAQT — Men's Watches, Pakistan",
-    template: "%s — WAQT",
+    default: "Zarvonique — Men's Watches, Pakistan",
+    template: "%s — Zarvonique",
   },
   description:
     "Timeless men's watches with complimentary delivery across Pakistan and cash on delivery.",

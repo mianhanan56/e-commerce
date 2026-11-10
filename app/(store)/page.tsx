@@ -1,9 +1,6 @@
 import { Benefits } from "@/components/home/Benefits";
-import { Categories } from "@/components/home/Categories";
-import { EditorialBanner } from "@/components/home/EditorialBanner";
+import { FeaturedWatches } from "@/components/home/FeaturedWatches";
 import { Hero } from "@/components/home/Hero";
-import { Newsletter } from "@/components/home/Newsletter";
-import { SignatureCollection } from "@/components/home/SignatureCollection";
 import { WhyChooseUs } from "@/components/home/WhyChooseUs";
 
 export default function Home() {
@@ -11,11 +8,8 @@ export default function Home() {
     <>
       <Hero />
       <Benefits />
-      <SignatureCollection />
-      <EditorialBanner />
-      <Categories />
+      <FeaturedWatches />
       <WhyChooseUs />
-      <Newsletter />
     </>
   );
 }

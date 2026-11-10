@@ -23,7 +23,7 @@
   }
 }
 
-// Eight products: on the three-column layout, hide the last two so rows stay full.
+// Eight watches: on the three-column layout, hide the last two so rows stay full.
 @media (min-width: 768px) and (max-width: 1023.98px) {
   .grid > :nth-child(n + 7) {
     display: none;

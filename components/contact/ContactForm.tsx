@@ -142,7 +142,7 @@ export function ContactForm() {
         <label htmlFor="contact-order" className={f.label}>
           Order number <span className={f.hint}>(optional)</span>
         </label>
-        <input id="contact-order" name="order" placeholder="WQ-123456" className={f.input} />
+        <input id="contact-order" name="order" placeholder="ZV-123456" className={f.input} />
       </div>
 
       <div className={f.field}>

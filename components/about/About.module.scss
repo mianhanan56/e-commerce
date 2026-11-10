@@ -32,7 +32,12 @@
 
   @include up(lg) {
     grid-template-columns: minmax(0, 45fr) minmax(0, 55fr);
-    min-height: min(calc(100vh - 7.5rem), 44rem);
+    // Fill the first screen below the announcement bar (~2.25rem) and the header.
+    min-height: min(calc(100vh - #{$header-h-lg} - 2.25rem), 44rem);
+  }
+
+  @include up(xl) {
+    min-height: min(calc(100vh - #{$header-h-xl} - 2.25rem), 44rem);
   }
 }
 

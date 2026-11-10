@@ -1,4 +1,5 @@
 import Image from "next/image";
+import Link from "next/link";
 import { Icon } from "@/components/ui/Icon";
 import { formatPKR } from "@/data/catalog";
 import type { ProductRow } from "@/lib/supabase/types";
@@ -10,7 +11,13 @@ type Product = Pick<
   "id" | "name" | "line" | "category" | "price" | "original_price" | "stock" | "image" | "active"
 >;
 
-export function ProductsTable({ products }: { products: Product[] }) {
+export function ProductsTable({
+  products,
+  categoryNames,
+}: {
+  products: Product[];
+  categoryNames: Record<string, string>;
+}) {
   return (
     <div className={ui.tableWrap}>
       <table className={ui.table}>
@@ -22,7 +29,7 @@ export function ProductsTable({ products }: { products: Product[] }) {
             <th className={ui.num}>Stock</th>
             <th>Visibility</th>
             <th>
-              <span className={styles.srOnly}>Store page</span>
+              <span className={styles.srOnly}>Actions</span>
             </th>
           </tr>
         </thead>
@@ -37,12 +44,14 @@ export function ProductsTable({ products }: { products: Product[] }) {
                     )}
                   </span>
                   <span>
-                    <span className={styles.name}>{p.name}</span>
+                    <Link href={`/admin/products/${p.id}`} className={styles.name}>
+                      {p.name}
+                    </Link>
                     <span className={styles.id}>{p.id}</span>
                   </span>
                 </div>
               </td>
-              <td className={styles.category}>{p.category}</td>
+              <td className={styles.category}>{categoryNames[p.category] ?? p.category}</td>
               <td className={ui.num}>
                 {formatPKR(p.price)}
                 {p.original_price && <s className={styles.was}>{formatPKR(p.original_price)}</s>}
@@ -60,15 +69,26 @@ export function ProductsTable({ products }: { products: Product[] }) {
                 </span>
               </td>
               <td>
-                <a
-                  href={`/products/${p.id}`}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className={styles.view}
-                  aria-label={`View ${p.name} in the store`}
-                >
-                  View <Icon name="arrow" size={14} />
-                </a>
+                <span className={styles.actions}>
+                  <Link
+                    href={`/admin/products/${p.id}`}
+                    className={styles.view}
+                    aria-label={`Edit ${p.name}`}
+                  >
+                    Edit
+                  </Link>
+                  {p.active && (
+                    <a
+                      href={`/products/${p.id}`}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className={styles.view}
+                      aria-label={`View ${p.name} in the store`}
+                    >
+                      View <Icon name="arrow" size={14} />
+                    </a>
+                  )}
+                </span>
               </td>
             </tr>
           ))}

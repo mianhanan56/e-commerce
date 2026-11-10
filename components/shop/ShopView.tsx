@@ -2,11 +2,12 @@
 
 import { useRouter, useSearchParams } from "next/navigation";
 import { useMemo } from "react";
+import { useCatalog } from "@/components/catalog/CatalogContext";
 import { ProductGrid } from "@/components/product/ProductGrid";
 import { Button } from "@/components/ui/Button";
 import { Dropdown } from "@/components/ui/Dropdown";
 import { Icon } from "@/components/ui/Icon";
-import { categories, getCategory, products, searchProducts } from "@/data/catalog";
+import { searchProducts } from "@/data/catalog";
 import styles from "./ShopView.module.scss";
 
 const sorts = [
@@ -28,8 +29,9 @@ type Flag = (typeof flags)[number]["value"];
 export function ShopView() {
   const params = useSearchParams();
   const router = useRouter();
+  const { products, categories } = useCatalog();
 
-  const category = getCategory(params.get("category") ?? "")?.slug;
+  const category = categories.find((c) => c.slug === params.get("category"))?.slug;
   const q = params.get("q")?.trim() ?? "";
   const sort: Sort = sorts.find((s) => s.value === params.get("sort"))?.value ?? "featured";
   const filter: Flag | undefined = flags.find((f) => f.value === params.get("filter"))?.value;
@@ -45,7 +47,7 @@ export function ShopView() {
   };
 
   const results = useMemo(() => {
-    let list = q ? searchProducts(q) : products;
+    let list = q ? searchProducts(products, q) : products;
     if (category) list = list.filter((p) => p.category === category);
     if (filter === "new") list = list.filter((p) => p.isNew);
     if (filter === "sale") list = list.filter((p) => p.originalPrice);
@@ -56,7 +58,7 @@ export function ShopView() {
     if (sort === "price-asc") sorted.sort((a, b) => a.price - b.price);
     if (sort === "price-desc") sorted.sort((a, b) => b.price - a.price);
     return sorted;
-  }, [q, category, filter, sort]);
+  }, [products, q, category, filter, sort]);
 
   const filtered = Boolean(q || category || filter);
 
@@ -70,7 +72,7 @@ export function ShopView() {
     <section className={styles.section} aria-label="Watches">
       <div className={styles.inner}>
         <div className={styles.toolbar}>
-          <ul className={styles.chips} aria-label="Filter by collection">
+          <ul className={styles.chips} aria-label="Filter by category">
             <li>
               <button
                 className={styles.chip}

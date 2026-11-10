@@ -1,4 +1,5 @@
-export type CategorySlug = "luxury" | "classic" | "minimalist" | "business" | "sports";
+// Collections are managed in the admin portal, so slugs are open-ended.
+export type CategorySlug = string;
 
 export type Product = {
   id: string;
@@ -19,6 +20,8 @@ export type Product = {
   };
   isNew?: boolean;
   bestseller?: boolean;
+  /** Units left; undefined when unknown (the offline sample catalogue). */
+  stock?: number;
 };
 
 export type Category = {
@@ -29,8 +32,11 @@ export type Category = {
   image: string;
 };
 
-// Placeholder catalogue — names and PKR prices are illustrative only.
-export const products: Product[] = [
+export type Catalog = { products: Product[]; categories: Category[] };
+
+// Sample catalogue (same as supabase/seed.sql). The store only shows it when Supabase isn't
+// configured; otherwise products and collections come from the database (lib/catalog.ts).
+export const sampleProducts: Product[] = [
   {
     id: "noir-automatic",
     name: "Noir Automatic",
@@ -323,7 +329,7 @@ export const products: Product[] = [
   },
 ];
 
-export const categories: Category[] = [
+export const sampleCategories: Category[] = [
   {
     slug: "luxury",
     name: "Luxury",
@@ -366,25 +372,17 @@ export const categories: Category[] = [
   },
 ];
 
-export function getProduct(id: string) {
-  return products.find((p) => p.id === id);
-}
-
-export function getCategory(slug: string) {
-  return categories.find((c) => c.slug === slug);
-}
-
-export function productsInCategory(slug: CategorySlug) {
+export function productsInCategory(products: Product[], slug: CategorySlug) {
   return products.filter((p) => p.category === slug);
 }
 
-export function relatedProducts(product: Product, count = 4) {
+export function relatedProducts(products: Product[], product: Product, count = 4) {
   const same = products.filter((p) => p.category === product.category && p.id !== product.id);
   const others = products.filter((p) => p.category !== product.category);
   return [...same, ...others].slice(0, count);
 }
 
-export function searchProducts(query: string) {
+export function searchProducts(products: Product[], query: string) {
   const q = query.trim().toLowerCase();
   if (!q) return [];
   return products.filter((p) =>
@@ -393,6 +391,10 @@ export function searchProducts(query: string) {
       .toLowerCase()
       .includes(q),
   );
+}
+
+export function isSoldOut(p: Product) {
+  return p.stock === 0;
 }
 
 const pkr = new Intl.NumberFormat("en-PK", { maximumFractionDigits: 0 });
@@ -404,4 +406,14 @@ export function formatPKR(value: number) {
 export function discountPercent(p: Product) {
   if (!p.originalPrice) return 0;
   return Math.round((1 - p.price / p.originalPrice) * 100);
+}
+
+// "01", "02"… for collection numbering.
+// Collections have no page of their own: a collection is the shop filtered to it.
+export function collectionHref(slug: string) {
+  return `/shop?category=${encodeURIComponent(slug)}`;
+}
+
+export function ordinal(index: number) {
+  return String(index + 1).padStart(2, "0");
 }

@@ -4,7 +4,7 @@ import styles from "./Benefits.module.scss";
 
 const benefits: { icon: IconName; title: string; text: string }[] = [
   { icon: "diamond", title: "Premium Quality", text: "Sapphire-coated glass, steel cases" },
-  { icon: "truck", title: "Free Delivery", text: "Across Pakistan in 2–4 days" },
+  { icon: "truck", title: "Free Delivery", text: "In 5–7 working days" },
   { icon: "cash", title: "Cash on Delivery", text: "Pay when your watch arrives" },
   { icon: "support", title: "Customer Support", text: "Real people, seven days a week" },
 ];

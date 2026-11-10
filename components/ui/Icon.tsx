@@ -76,6 +76,14 @@ const paths = {
       <path d="M12 7.5V12l3 2" />
     </>
   ),
+  grid: (
+    <>
+      <path d="M4.5 4.5h6v6h-6z" />
+      <path d="M13.5 4.5h6v6h-6z" />
+      <path d="M4.5 13.5h6v6h-6z" />
+      <path d="M13.5 13.5h6v6h-6z" />
+    </>
+  ),
   shield: (
     <>
       <path d="M12 3.5 19 6v5.5c0 4.4-3 7.6-7 9-4-1.4-7-4.6-7-9V6z" />

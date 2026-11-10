@@ -28,7 +28,7 @@ export async function GET() {
   return new Response(csv, {
     headers: {
       "Content-Type": "text/csv; charset=utf-8",
-      "Content-Disposition": `attachment; filename="waqt-subscribers-${today}.csv"`,
+      "Content-Disposition": `attachment; filename="zarvonique-subscribers-${today}.csv"`,
       "Cache-Control": "no-store",
     },
   });

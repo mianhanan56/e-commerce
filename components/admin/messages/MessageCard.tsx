@@ -6,7 +6,7 @@ import { HandledToggle } from "./HandledToggle";
 import styles from "./Messages.module.scss";
 
 export function MessageCard({ message: m }: { message: ContactMessageRow }) {
-  const reply = `mailto:${m.email}?subject=${encodeURIComponent("Re: your message to WAQT")}`;
+  const reply = `mailto:${m.email}?subject=${encodeURIComponent("Re: your message to Zarvonique")}`;
 
   return (
     <article className={`${ui.card} ${m.handled ? styles.handled : ""}`}>

@@ -2,30 +2,35 @@ import { Button } from "@/components/ui/Button";
 import { Reveal } from "@/components/ui/Reveal";
 import { SectionHeading } from "@/components/ui/SectionHeading";
 import { ProductCard } from "@/components/product/ProductCard";
-import { products } from "@/data/catalog";
-import styles from "./SignatureCollection.module.scss";
+import { getCatalog } from "@/lib/catalog";
+import styles from "./FeaturedWatches.module.scss";
 
-const bestsellers = products.filter((p) => p.bestseller);
+// The first watches of the shop, in the shop's default ("Featured") order.
+const SHOWN = 8;
 
-export function SignatureCollection() {
+export async function FeaturedWatches() {
+  const { products } = await getCatalog();
+  const watches = products.slice(0, SHOWN);
+  if (watches.length === 0) return null;
+
   return (
-    <section id="collection" className={styles.section} aria-labelledby="collection-title">
+    <section className={styles.section} aria-labelledby="watches-title">
       <div className={styles.inner}>
         <Reveal>
           <SectionHeading
-            id="collection-title"
-            eyebrow="Best Sellers"
+            id="watches-title"
+            eyebrow="Shop"
             title={
               <>
-                The Signature <em>Collection</em>
+                Our <em>Watches</em>
               </>
             }
-            intro="Eight pieces our clients return to again and again — from a quiet dress watch to a diver built for the deep end of the week."
+            intro="Men's watches chosen for character and built to last, delivered free across Pakistan with cash on delivery."
           />
         </Reveal>
 
         <ul className={styles.grid}>
-          {bestsellers.map((p, i) => (
+          {watches.map((p, i) => (
             <Reveal as="li" key={p.id} delay={(i % 4) as 0 | 1 | 2 | 3}>
               <ProductCard product={p} />
             </Reveal>
@@ -34,7 +39,7 @@ export function SignatureCollection() {
 
         <div className={styles.more}>
           <Button href="/shop" variant="outline" withArrow>
-            Shop All Watches
+            View All Watches
           </Button>
         </div>
       </div>

@@ -16,7 +16,7 @@
 .nav {
   @include up(lg) {
     position: sticky;
-    top: calc(5.25rem + #{$space-6});
+    top: calc(#{$header-h-xl} + #{$space-6});
     align-self: start;
   }
 

@@ -5,11 +5,18 @@ import Link from "next/link";
 import { useState } from "react";
 import { MAX_QTY, useCart } from "@/components/cart/CartContext";
 import { Icon, type IconName } from "@/components/ui/Icon";
-import { discountPercent, formatPKR, type Category, type Product } from "@/data/catalog";
+import {
+  collectionHref,
+  discountPercent,
+  formatPKR,
+  isSoldOut,
+  type Category,
+  type Product,
+} from "@/data/catalog";
 import styles from "./ProductDetail.module.scss";
 
 const assurances: { icon: IconName; title: string; text: string }[] = [
-  { icon: "truck", title: "Free delivery", text: "2–4 days, anywhere in Pakistan" },
+  { icon: "truck", title: "Free delivery", text: "5–7 working days, anywhere in Pakistan" },
   { icon: "cash", title: "Cash on delivery", text: "Pay when it reaches you" },
   { icon: "returns", title: "7-day exchange", text: "Unworn, in original packaging" },
   { icon: "shield", title: "1-year warranty", text: "Movement and manufacturing" },
@@ -31,6 +38,8 @@ export function ProductDetail({ product, category }: Props) {
   const [qty, setQty] = useState(1);
   const saved = isWishlisted(product.id);
   const off = discountPercent(product);
+  const soldOut = isSoldOut(product);
+  const maxQty = Math.max(1, Math.min(MAX_QTY, product.stock ?? MAX_QTY));
 
   const onAdd = () => {
     addToCart(product.id, qty);
@@ -59,7 +68,9 @@ export function ProductDetail({ product, category }: Props) {
             className={styles.image}
           />
         </div>
-        {off > 0 ? (
+        {soldOut ? (
+          <span className={styles.badge}>Sold out</span>
+        ) : off > 0 ? (
           <span className={styles.badge}>Save {off}%</span>
         ) : (
           product.isNew && <span className={styles.badge}>New arrival</span>
@@ -67,8 +78,8 @@ export function ProductDetail({ product, category }: Props) {
       </div>
 
       <div className={styles.panel}>
-        <Link href={`/collections/${category.slug}`} className={styles.eyebrow}>
-          {category.name} Collection
+        <Link href={collectionHref(category.slug)} className={styles.eyebrow}>
+          {category.name}
         </Link>
         <h1 className={styles.name}>{product.name}</h1>
         <p className={styles.line}>{product.line}</p>
@@ -91,22 +102,28 @@ export function ProductDetail({ product, category }: Props) {
             <button
               aria-label="Decrease quantity"
               onClick={() => setQty((q) => Math.max(1, q - 1))}
-              disabled={qty <= 1}
+              disabled={soldOut || qty <= 1}
             >
               <Icon name="minus" size={16} />
             </button>
             <output aria-live="polite">{qty}</output>
             <button
               aria-label="Increase quantity"
-              onClick={() => setQty((q) => Math.min(MAX_QTY, q + 1))}
-              disabled={qty >= MAX_QTY}
+              onClick={() => setQty((q) => Math.min(maxQty, q + 1))}
+              disabled={soldOut || qty >= maxQty}
             >
               <Icon name="plus" size={16} />
             </button>
           </div>
 
-          <button className={styles.add} onClick={onAdd}>
-            <Icon name="bag" size={18} /> Add to bag
+          <button className={styles.add} onClick={onAdd} disabled={soldOut}>
+            {soldOut ? (
+              "Sold out"
+            ) : (
+              <>
+                <Icon name="bag" size={18} /> Add to bag
+              </>
+            )}
           </button>
 
           <button
@@ -151,7 +168,7 @@ export function ProductDetail({ product, category }: Props) {
               Delivery &amp; Returns <Icon name="chevron" size={18} />
             </summary>
             <p>
-              Complimentary, insured delivery to over 120 cities in 2–4 working days. Pay by cash on
+              Complimentary, insured delivery to over 120 cities in 5–7 working days. Pay by cash on
               delivery or bank transfer. Changed your mind? Exchange any unworn watch within 7 days
               in its original packaging. <Link href="/help/returns">Read the policy</Link>.
             </p>
@@ -161,8 +178,8 @@ export function ProductDetail({ product, category }: Props) {
               Warranty <Icon name="chevron" size={18} />
             </summary>
             <p>
-              Every WAQT watch carries a 1-year warranty covering the movement and manufacturing
-              defects. Keep your warranty card — it arrives in the box.{" "}
+              Every Zarvonique watch carries a 1-year warranty covering the movement and
+              manufacturing defects. Keep your warranty card — it arrives in the box.{" "}
               <Link href="/help/warranty">Warranty details</Link>.
             </p>
           </details>

@@ -1,6 +1,6 @@
-# Project Status — WAQT
+# Project Status — Zarvonique
 
-_Last updated: 2026-11-03_
+_Last updated: 2026-11-10_
 
 ## Current milestone
 
@@ -21,15 +21,37 @@ end-to-end run on real Supabase still pending. M1 (design-phase storefront) is d
   `submit_contact` / `subscribe_newsletter` / `admin_dashboard` functions, audit trigger,
   setup guide
 - **Store → database:** checkout places real orders (DB prices, stock reservation, sequential
-  `WQ-` numbers), tracking needs order number + phone/email, contact and newsletter saved
+  order numbers from a sequence), tracking needs order number + phone/email, contact and newsletter saved
 - **Admin portal `/admin`:** email/password login (admins only), dashboard stats, orders list
   (status tabs, search incl. phone, paging), order detail (status with cancel confirmation,
   payment, courier + tracking, internal notes, history, WhatsApp/call links, packing slip
-  print), products (read-only, stock levels), messages inbox, subscribers + CSV export
+  print), messages inbox, subscribers + CSV export
+- **Catalogue managed in the admin (2026-11-03, uncommitted):** storefront (shop, collections,
+  product pages, home sections, footer, cart, search, wishlist) reads products and collections
+  from Supabase (`lib/catalog.ts`, cached + tag-invalidated). Admin `/admin/products` and
+  `/admin/collections`: add, edit, hide, delete, photo upload (Supabase Storage), position,
+  new/best-seller flags, stock. Sold-out watches show a badge and can't be added to the bag.
+
+- **Zarvonique logo (2026-11-10, uncommitted):** the user's logo replaces the old text
+  wordmark in the header, mobile drawer, footer (stacked, with "Watches"), admin sidebar and
+  admin login. New favicon, `icon.svg` and `apple-icon.png`.
+- **Delivery time is 5–7 working days everywhere (2026-11-10):** shipping page (one row,
+  "Anywhere in Pakistan"), FAQ, home benefits, cart, product page, checkout confirmation,
+  track order.
+
+- **Brand renamed to Zarvonique everywhere (2026-11-10):** titles, metadata, copy, help pages,
+  admin, storage keys, README. New order prefix `ZV-`: migration `20261110120000_order_number_prefix.sql` written, the user still has to run it.
+- **Contact (2026-11-10):** zarvonique@gmail.com, 24 hours Monday – Sunday, no address (contact
+  page + footer). **Home:** Hero, Benefits, "Our Watches" (first 8 shop watches), Why Choose Us. Signature Collection, Shop by Category, The Edit banner and the newsletter section removed; no "collection" wording left in the store.
+- **Collections pages removed (2026-11-10):** menu link gone; collection links open the
+  filtered shop; old URLs redirect. **Header redesigned around the logo:** black, full stacked
+  Zarvonique logo in the artwork's gold.
 
 ## In progress
 
-- Nothing mid-edit. Supabase is live; waiting on the user to disable public sign-ups.
+- Nothing mid-edit. User: run `supabase/migrations/20261103120000_catalog_images.sql` (photo
+  uploads fail with a clear message until then), disable public sign-ups, add the two env vars
+  in Vercel, commit + push the catalogue work.
 
 ## Pending
 
@@ -67,8 +89,33 @@ order notifications, placeholder content, tests, deploy configuration.
   `AdminNav.Fallback` undefined on the server, orders tabs clipped, broken SCSS import after
   the route-group move, `/admin` prerendered as static without env vars.
 - 2026-11-02: Supabase project created and `.env.local` connected; schema not applied yet.
+- 2026-11-03: Cleared every dev console warning (21 pages × desktop/mobile, headless Chrome):
+  `<html suppressHydrationWarning>` for extension-injected attributes; eager loading for
+  above-the-fold images (shop first row, collections index, collection page grid); product
+  gallery image no longer has a sticky `fill` parent. Lint, tsc and build clean.
 - 2026-11-03: Read-only DB check: schema, grants and seed (5 categories, 15 products) correct;
   public sign-up still enabled.
   Clearer admin sign-in errors; fixed the remaining "blocking route" dev insight on `/admin/login`.
 - 2026-11-03: Migration, seed and owner admin applied on the real project; admin login works.
   Every `.env*` file git-ignored (no exceptions). Supabase MCP added (`.mcp.json`). Pushed to `master`.
+- 2026-11-03: Phase 4 built: catalogue from Supabase + admin product/collection editing with
+  photo upload. Verified: tsc, lint, isolated production build (55 pages, product/collection
+  params from the real DB), Playwright against that build with real Supabase (read-only): all
+  store pages 200, counts/filters/footer/search/cart from DB, no console errors, admin routes
+  redirect to login; admin forms (scratch-only preview page) render on desktop + mobile, ID
+  auto-slug, client photo checks. **Not yet run:** real admin saves/deletes/uploads (DB writes).
+- 2026-11-10: New logo + 5–7 working days copy. The header's inline nav now starts at `xl`
+  (1280px), because the wider logo made "About Us" wrap at 1024px. Below that the drawer is used.
+  Checked in headless Chrome against the sample catalogue at 320–1920px: logo centred, no
+  overflow, no console errors. tsc, lint and prettier pass.
+- 2026-11-10: **Store shows "Couldn't load the catalogue: TypeError: fetch failed".** Cause:
+  `yvzfpgnxqcabdgvmivyr.supabase.co` returns NXDOMAIN (1.1.1.1 and the local resolver), while
+  supabase.com resolves. The Supabase project is paused or deleted. The user has to restore it
+  in the Supabase dashboard. The store no longer crashes in the meantime: `getCatalog()` serves
+  the sample catalogue while Supabase is unreachable and retries every minute. On :3002 all store
+  pages return 200 with no error overlay.
+- 2026-11-10: Removed the collection pages and redesigned the header (black, stacked logo).
+  Checked on :3002: `/collections` → `/shop` and `/collections/classic` →
+  `/shop?category=classic` (Classic chip active); product breadcrumb/eyebrow link to the filtered
+  shop; header logo centred 360–1920px, nav on one line from 1024px, no horizontal overflow, no
+  console errors. tsc and lint pass.

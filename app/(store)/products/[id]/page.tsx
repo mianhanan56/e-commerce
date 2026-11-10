@@ -5,15 +5,18 @@ import { ProductGrid } from "@/components/product/ProductGrid";
 import { Breadcrumbs } from "@/components/ui/PageHeader";
 import { Reveal } from "@/components/ui/Reveal";
 import { SectionHeading } from "@/components/ui/SectionHeading";
-import { getCategory, getProduct, products, relatedProducts } from "@/data/catalog";
+import { collectionHref, relatedProducts } from "@/data/catalog";
+import { getCatalog, getProduct } from "@/lib/catalog";
 import styles from "./page.module.scss";
 
-export function generateStaticParams() {
-  return products.map((p) => ({ id: p.id }));
+export async function generateStaticParams() {
+  const { products } = await getCatalog();
+  // Cache Components needs at least one param; a placeholder renders the 404.
+  return products.length ? products.map((p) => ({ id: p.id })) : [{ id: "none" }];
 }
 
 export async function generateMetadata({ params }: PageProps<"/products/[id]">): Promise<Metadata> {
-  const product = getProduct((await params).id);
+  const product = await getProduct((await params).id);
   if (!product) return {};
   return {
     title: product.name,
@@ -23,9 +26,12 @@ export async function generateMetadata({ params }: PageProps<"/products/[id]">):
 }
 
 export default async function ProductPage({ params }: PageProps<"/products/[id]">) {
-  const product = getProduct((await params).id);
+  const { id } = await params;
+  const { products, categories } = await getCatalog();
+  const product = products.find((p) => p.id === id);
   if (!product) notFound();
-  const category = getCategory(product.category)!;
+  // The products → categories foreign key guarantees a match.
+  const category = categories.find((c) => c.slug === product.category)!;
 
   return (
     <>
@@ -33,7 +39,7 @@ export default async function ProductPage({ params }: PageProps<"/products/[id]"
         <Breadcrumbs
           crumbs={[
             { label: "Shop", href: "/shop" },
-            { label: category.name, href: `/collections/${category.slug}` },
+            { label: category.name, href: collectionHref(category.slug) },
             { label: product.name },
           ]}
         />
@@ -53,7 +59,7 @@ export default async function ProductPage({ params }: PageProps<"/products/[id]"
               }
             />
           </Reveal>
-          <ProductGrid products={relatedProducts(product)} />
+          <ProductGrid products={relatedProducts(products, product)} />
         </div>
       </section>
     </>

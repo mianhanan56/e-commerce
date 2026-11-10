@@ -57,7 +57,7 @@ export function TrackOrder() {
             id="track-number"
             name="number"
             required
-            placeholder="WQ-123456"
+            placeholder="ZV-123456"
             autoComplete="off"
             className={f.input}
           />
@@ -100,8 +100,8 @@ export function TrackOrder() {
             <Icon name="truck" size={28} className={styles.emptyIcon} />
             <h2 className={styles.emptyTitle}>Where&apos;s my watch?</h2>
             <p className={styles.emptyText}>
-              Most orders arrive in 1–2 working days in major cities and 2–4 days elsewhere. Read
-              more about <Link href="/help/shipping">shipping &amp; delivery</Link>.
+              Orders arrive within 5–7 working days, anywhere in Pakistan. Read more about{" "}
+              <Link href="/help/shipping">shipping &amp; delivery</Link>.
             </p>
           </div>
         )}

@@ -1,7 +1,8 @@
 "use client";
 
 import { createContext, useCallback, useContext, useMemo, useState } from "react";
-import { getProduct, type Product } from "@/data/catalog";
+import { useCatalog } from "@/components/catalog/CatalogContext";
+import type { Product } from "@/data/catalog";
 import { createPersistedStore, useHydrated, usePersisted } from "@/lib/persisted";
 
 export const MAX_QTY = 5;
@@ -27,15 +28,17 @@ type CartState = {
   closeCart: () => void;
 };
 
-const cartStore = createPersistedStore<CartLine[]>("waqt:cart", []);
-const wishlistStore = createPersistedStore<string[]>("waqt:wishlist", []);
+const cartStore = createPersistedStore<CartLine[]>("zarvonique:cart", []);
+const wishlistStore = createPersistedStore<string[]>("zarvonique:wishlist", []);
 
 const CartContext = createContext<CartState | null>(null);
 
 const clamp = (qty: number) => Math.max(1, Math.min(MAX_QTY, qty));
 
-// Client-only cart for the design phase: persisted to localStorage, no backend.
+// Cart and wishlist live in localStorage; prices come from the live catalogue, and the
+// database re-checks them (and stock) when the order is placed.
 export function CartProvider({ children }: { children: React.ReactNode }) {
+  const { getProduct } = useCatalog();
   const lines = usePersisted(cartStore);
   const wishlist = usePersisted(wishlistStore);
   const hydrated = useHydrated();
@@ -93,6 +96,7 @@ export function CartProvider({ children }: { children: React.ReactNode }) {
       closeCart,
     };
   }, [
+    getProduct,
     lines,
     wishlist,
     hydrated,

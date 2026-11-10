@@ -1,5 +1,5 @@
 import { Suspense } from "react";
-import { Wordmark } from "@/components/layout/Wordmark";
+import { Logo } from "@/components/layout/Logo";
 import { Icon } from "@/components/ui/Icon";
 import type { Admin } from "@/lib/admin/auth";
 import { signOut } from "@/lib/actions/admin";
@@ -11,7 +11,7 @@ export function AdminShell({ admin, children }: { admin: Admin; children: React.
     <div className={styles.shell}>
       <aside className={styles.sidebar}>
         <div className={styles.brand}>
-          <Wordmark tone="light" />
+          <Logo surface="dark" />
           <span className={styles.badge}>Admin</span>
         </div>
         <Suspense fallback={<AdminNavFallback />}>

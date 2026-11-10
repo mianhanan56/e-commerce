@@ -22,6 +22,19 @@
 .name {
   display: block;
   font-weight: 500;
+
+  @include hover {
+    &:hover {
+      text-decoration: underline;
+      text-decoration-color: $gold;
+      text-underline-offset: 3px;
+    }
+  }
+}
+
+.actions {
+  display: inline-flex;
+  gap: $space-4;
 }
 
 .id {

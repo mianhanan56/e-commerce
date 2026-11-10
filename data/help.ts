@@ -17,7 +17,7 @@ export type HelpPage = {
 export const faqs: { q: string; a: string }[] = [
   {
     q: "How long does delivery take?",
-    a: "Lahore, Karachi and Islamabad/Rawalpindi usually receive orders in 1–2 working days. Everywhere else in Pakistan takes 2–4 working days. Delivery is always free.",
+    a: "Orders arrive within 5–7 working days, anywhere in Pakistan. Delivery is always free.",
   },
   {
     q: "Can I pay cash on delivery?",
@@ -25,7 +25,7 @@ export const faqs: { q: string; a: string }[] = [
   },
   {
     q: "Are your watches authentic and new?",
-    a: "Every watch is brand new, sealed and inspected by hand in our Lahore studio before dispatch. Each one ships with a WAQT warranty card and box.",
+    a: "Every watch is brand new, sealed and inspected by hand in our Lahore studio before dispatch. Each one ships with a Zarvonique warranty card and box.",
   },
   {
     q: "Can I open the parcel before paying?",
@@ -60,12 +60,7 @@ export const helpPages: HelpPage[] = [
       {
         type: "table",
         head: ["Destination", "Estimated time", "Cost"],
-        rows: [
-          ["Lahore", "1 working day", "Free"],
-          ["Karachi, Islamabad, Rawalpindi", "1–2 working days", "Free"],
-          ["Other major cities", "2–3 working days", "Free"],
-          ["Smaller towns and AJK / GB", "3–4 working days", "Free"],
-        ],
+        rows: [["Anywhere in Pakistan", "5–7 working days", "Free"]],
       },
       {
         type: "p",
@@ -97,7 +92,7 @@ export const helpPages: HelpPage[] = [
       { type: "h", text: "7-day exchange" },
       {
         type: "p",
-        text: "You can exchange any watch within 7 days of delivery for another model or WAQT store credit. If you choose a more expensive watch, simply pay the difference.",
+        text: "You can exchange any watch within 7 days of delivery for another model or Zarvonique store credit. If you choose a more expensive watch, simply pay the difference.",
       },
       { type: "h", text: "Conditions" },
       {
@@ -129,7 +124,7 @@ export const helpPages: HelpPage[] = [
     slug: "warranty",
     title: "Warranty",
     nav: "Warranty",
-    intro: "Every WAQT watch carries a one-year warranty on its movement.",
+    intro: "Every Zarvonique watch carries a one-year warranty on its movement.",
     blocks: [
       { type: "h", text: "What's covered" },
       {
@@ -146,7 +141,7 @@ export const helpPages: HelpPage[] = [
         items: [
           "Glass, straps, bracelets and normal wear such as scratches.",
           "Damage from knocks, drops or water exposure beyond the stated water resistance.",
-          "Watches opened or repaired by anyone other than WAQT.",
+          "Watches opened or repaired by anyone other than Zarvonique.",
         ],
       },
       { type: "h", text: "Making a claim" },
@@ -228,7 +223,7 @@ export const helpPages: HelpPage[] = [
         type: "list",
         items: [
           "To confirm, deliver and support your orders.",
-          "To send the WAQT Letter, if you subscribed — once a month at most.",
+          "To send the Zarvonique Letter, if you subscribed — once a month at most.",
           "To improve our store, using anonymised analytics.",
         ],
       },
@@ -240,7 +235,7 @@ export const helpPages: HelpPage[] = [
       { type: "h", text: "Your choices" },
       {
         type: "p",
-        text: "You can unsubscribe from emails at any time, and you can ask us to correct or delete your personal information by writing to hello@waqt.pk.",
+        text: "You can unsubscribe from emails at any time, and you can ask us to correct or delete your personal information by writing to zarvonique@gmail.com.",
       },
     ],
   },
@@ -248,7 +243,7 @@ export const helpPages: HelpPage[] = [
     slug: "terms",
     title: "Terms of Service",
     nav: "Terms of Service",
-    intro: "The terms that apply when you shop with WAQT.",
+    intro: "The terms that apply when you shop with Zarvonique.",
     updated: "1 November 2026",
     blocks: [
       { type: "h", text: "Orders" },

@@ -1,14 +1,15 @@
-# Architecture — WAQT Men's Watches
+# Architecture — Zarvonique Men's Watches
 
-_Last updated: 2026-11-02 (Supabase backend + admin portal)_
+_Last updated: 2026-11-10 (Zarvonique logo component)_
 
 ## Overview
 
-WAQT is a men's watch storefront for Pakistan plus an **admin portal at `/admin`**, in one
+Zarvonique is a men's watch storefront for Pakistan plus an **admin portal at `/admin`**, in one
 Next.js App Router app. The backend is **Supabase** (Postgres + Auth): orders, contact messages
 and newsletter sign-ups are stored there, and admins manage them in the portal. The storefront
-catalogue is still read from static `data/catalog.ts` (the `products` table mirrors it and is the
-price/stock authority at checkout). Cart and wishlist stay client state in `localStorage`.
+catalogue (products + collections) is also read from Supabase and edited in the admin portal;
+`data/catalog.ts` only holds types, pure helpers and a sample catalogue used when Supabase isn't
+configured. Cart and wishlist stay client state in `localStorage`.
 
 **Status (2026-11-02): backend code is written but no Supabase project exists yet.** Until
 `.env.local` has the Supabase URL + publishable key, store actions return a friendly "not
@@ -52,12 +53,12 @@ proxy.ts                  (Next 16 "middleware") refreshes the Supabase session 
 app/
   layout.tsx              <html>/<body>, fonts, base metadata ONLY (no store chrome)
   globals.scss            Reset, base typography, body.isLocked
+  favicon.ico icon.svg apple-icon.png   Zarvonique "Z" dial (Next file-convention icons)
   not-found.tsx           404, wrapped in <StoreShell>
   (store)/                Route group — URLs unchanged
     layout.tsx            <StoreShell>: CartProvider + AnnouncementBar/Header/<main>/Footer
     page.tsx              Homepage (composes components/home/*)
     shop/                 /shop: Suspense around client ShopView (URL-driven filters)
-    collections/          /collections and /collections/[slug] (+ loading.tsx)
     products/[id]/        Product detail + related products (+ loading.tsx)
     cart/ checkout/ wishlist/ track-order/ about/ contact/
     help/[slug]/          shipping, returns, warranty, size-guide, faq, privacy, terms
@@ -68,18 +69,21 @@ app/
       page.tsx            Dashboard (admin_dashboard() stats, recent orders, low stock)
       orders/ orders/[id]/ List (status tabs, search, paging) and detail (status, payment,
                           shipping, notes, timeline, print)
-      products/           Read-only catalogue/stock table (editing = next phase)
+      products/           List + new/ + [id]/ editor (add, edit, hide, delete, photo upload)
+      collections/        List + new/ + [slug]/ editor (add, edit, delete when empty)
       messages/           Contact inbox with handled toggle
       subscribers/        List + export/route.ts (CSV, 401 without admin)
 supabase/
   migrations/             SQL schema, RLS, functions (see "Backend")
-  seed.sql                Categories + 15 products generated from data/catalog.ts
+  migrations/…_catalog_images.sql  Public "catalog" storage bucket, admin-only writes
+  seed.sql                Launch categories + 15 products (same as the sample catalogue)
   README.md               Step-by-step project setup (create, migrate, admin user, env)
 components/
   ui/                     Primitives: Button, Icon (inline SVG set), Reveal, SectionHeading,
                           PageHeader (+Breadcrumbs), Container, EmptyState, PageLoading,
                           Form.module.scss, Dropdown (new, uncommitted)
-  layout/                 AnnouncementBar, Header (nav, mobile drawer, search, bag), Footer, Wordmark
+  layout/                 AnnouncementBar, Header (nav, mobile drawer, search, bag), Footer,
+                          Logo (SVG lockup, inline/stacked, light/dark) + logo-paths.ts (generated)
   home/                   One component per homepage section
   cart/                   CartContext (cart + wishlist + drawer state), CartDrawer, CartView,
                           CartLineItem, OrderSummary, WishlistView
@@ -89,7 +93,8 @@ components/
   product/                ProductCard, ProductGrid, ProductDetail
   shop/ search/ checkout/ track/ about/ contact/ help/   Feature components
 data/
-  catalog.ts              Product/Category types, 15 products, 5 categories, query helpers
+  catalog.ts              Product/Category/Catalog types, pure helpers (search, related,
+                          formatPKR, ordinal…), sampleProducts/sampleCategories (offline only)
   help.ts                 Help centre / policy pages and FAQs as typed blocks
 lib/
   persisted.ts            createPersistedStore / usePersisted / useHydrated
@@ -113,10 +118,10 @@ public/images/            Unsplash placeholder photos (c-* categories, p-* produ
 
 | Route                                 | Rendering                      | Notes                                                          |
 | ------------------------------------- | ------------------------------ | -------------------------------------------------------------- |
-| `/`                                   | Static                         | Hero, Benefits, SignatureCollection, Editorial, Categories…    |
+| `/`                                   | Static                         | Hero, Benefits, FeaturedWatches (first 8 watches), WhyChooseUs |
 | `/shop`                               | Static shell + client filters  | `?category=`, `?q=`, `?sort=`, `?filter=new\|sale\|bestseller` |
-| `/collections`, `/collections/[slug]` | Static / PPR                   | slugs: luxury, classic, minimalist, business, sports           |
-| `/products/[id]`                      | Static / PPR                   | 15 product ids from `data/catalog.ts`                          |
+| `/collections`, `/collections/[slug]` | 307 redirect (next.config.ts)  | → `/shop`, `/shop?category=<slug>` (pages removed 2026-11-10)  |
+| `/products/[id]`                      | Static / PPR                   | Ids from `getCatalog()`; new ids render on demand (ISR)        |
 | `/cart`, `/wishlist`                  | Static shell, client state     | Reads `localStorage` after hydration                           |
 | `/checkout`                           | Static shell, client state     | Submits via `placeOrder` server action → `create_order`        |
 | `/track-order`                        | Static shell                   | `trackOrder` action → `track_order` (number + phone/email)     |
@@ -125,10 +130,10 @@ public/images/            Unsplash placeholder photos (c-* categories, p-* produ
 | `/admin/*` (portal)                   | Request time (`instant=false`) | Guarded by proxy.ts + `requireAdmin()` + RLS                   |
 | `/help/[slug]`                        | Static / PPR                   | Content from `data/help.ts`                                    |
 
-## Data model (`data/catalog.ts`)
+## Data model (`data/catalog.ts` types, rows from Supabase)
 
 ```ts
-type CategorySlug = "luxury" | "classic" | "minimalist" | "business" | "sports";
+type CategorySlug = string; // collections are managed in the admin
 type Product = {
   id;
   name;
@@ -141,15 +146,40 @@ type Product = {
   specs: { movement; caseSize; caseMaterial; strap; glass; waterResistance };
   isNew?;
   bestseller?;
+  stock?; // undefined = unknown (sample catalogue); 0 = "Sold out", add-to-bag disabled
 };
 type Category = { slug; name; description; story; image };
+type Catalog = { products: Product[]; categories: Category[] };
 ```
 
-Helpers: `getProduct`, `getCategory`, `productsInCategory`, `relatedProducts`,
-`searchProducts` (substring match over name/line/category/movement/strap), `formatPKR`
-(`Rs 38,500`), `discountPercent`.
+**Where the catalogue comes from:**
 
-Orders live in Supabase (see "Backend"). Order numbers are `WQ-100001`, `WQ-100002`… from a
+- `lib/catalog.ts` (server-only): `getCatalog()` is `'use cache'` + `cacheTag("catalog")` +
+  `cacheLife("hours")`. It reads active products (RLS hides inactive ones from anon) and all
+  categories ordered by `sort_order, name`, maps rows to `Product`/`Category` (`toProduct`), and
+  throws on a real DB error (one with a code, e.g. PGRST205) rather than caching an empty shop.
+  If Supabase can't be reached at all (supabase-js returns an error with no `code`: DNS, network,
+  paused project), it logs a `console.warn`, returns the sample catalogue and caches that for only
+  `cacheLife("minutes")`, so the real catalogue comes back within about a minute of Supabase
+  recovering. (Added 2026-11-10 after the project host went NXDOMAIN and every page returned 500.)
+  Without env vars it returns the sample catalogue. `getProduct(id)` / `getCategory(slug)` wrap it.
+- Server pages/sections (shop fallback, collections, product page, home Categories /
+  SignatureCollection) call `getCatalog()`. `StoreShell` (async) fetches it once and provides it
+  to client components through `CatalogProvider` / `useCatalog()`
+  (`components/catalog/CatalogContext.tsx`): cart, wishlist, search dialog, `ShopView`.
+  `Footer` gets `categories` as a prop.
+- Invalidation: admin catalogue actions `updateTag("catalog")` (read-your-own-writes);
+  `placeOrder` and cancelling an order `revalidateTag("catalog", "max")` (stock changed).
+  Edits made directly in the Supabase Table Editor appear within the hour.
+- `generateStaticParams` for products/collections comes from the catalogue and returns a
+  `"none"` placeholder when empty (Cache Components requires ≥ 1 param).
+
+Pure helpers (take the arrays): `productsInCategory`, `relatedProducts`, `searchProducts`
+(substring over name/line/category/movement/strap), `isSoldOut`, `formatPKR` (`Rs 38,500`),
+`discountPercent`, `ordinal` (`01`, `02`…). Copy that used to hard-code counts ("Fifteen
+pieces", "Five ways…") is now count-free.
+
+Orders live in Supabase (see "Backend"). Order numbers are `ZV-100001`, `ZV-100002`… (migration `20261110120000_order_number_prefix.sql`; orders before it keep the old prefix) from a
 database sequence.
 
 ## State management
@@ -159,8 +189,8 @@ database sequence.
   see `initial` and the stored value loads only on the client. Writes sync across tabs through
   the `storage` event.
 - `useHydrated()` returns false during SSR and hydration. Use it to avoid flashing empty-cart UI.
-- Store keys: `waqt:cart` (`{id, qty}[]`), `waqt:wishlist` (`string[]`). (`waqt:orders` and
-  `waqt:user` are obsolete keys from earlier versions; nothing reads them.)
+- Store keys: `zarvonique:cart` (`{id, qty}[]`), `zarvonique:wishlist` (`string[]`). Keys under
+  the old brand prefix are obsolete; nothing reads them.
 - `CartProvider` (in `StoreShell`, used by `app/(store)/layout.tsx`) derives `items`, `count`,
   `subtotal` and `savings` from the catalogue. Quantity is clamped to 1…`MAX_QTY` (5). Cart
   drawer open/close is plain React state.
@@ -176,6 +206,23 @@ database sequence.
 - Layout is mobile first: `@include up(sm|md|lg|xl|xxl)` (480/768/1024/1280/1440).
   `@include hover` guards hover styles. Other mixins: `container`, `eyebrow`, `visually-hidden`.
 - Class composition: `[a, cond && b, className].filter(Boolean).join(" ")`.
+- Images: above-the-fold `next/image` gets `loading="eager"` (hero/LCP also `fetchPriority="high"`;
+  `priority` is deprecated in Next 16). `ProductGrid eager={n}` makes the first n cards eager
+  (shop: 4, collection page: all). A `fill` image's parent must be `relative|absolute|fixed` —
+  sticky is rejected, so `ProductDetail` wraps the image in an absolute `.frame`.
+
+- Header (2026-11-10): black (`$brand-black`, the logo artwork's background) with the full
+  stacked logo in the artwork's gold (`$brand-gold*` tokens). Nav links are light, active/hover
+  gold. Heights: `$header-h` 5.25rem, `$header-h-lg` 6.5rem, `$header-h-xl` 7.25rem; sticky
+  sidebars (cart, checkout, help) and the home/about heroes use these tokens. Four nav links
+  (Home, Shop, About Us, Contact) show inline from `lg`; below that the drawer is used.
+- Logo: `<Logo />` sizes from `--logo-height` set by the parent (header 4–6rem stacked, drawer
+  4rem stacked, footer 10.5rem stacked, login 9rem stacked, admin sidebar 1.875rem inline).
+  `surface="dark"` is the artwork's gold; `light` is a deeper gold for cream/white. Gradient ids
+  come from `useId()` because several logos render on one page.
+- Collections have no store pages: `collectionHref(slug)` in `data/catalog.ts` returns
+  `/shop?category=<slug>`, used by footer, home Categories, search, product breadcrumb/eyebrow
+  and the admin "View" links. Collections are still managed in `/admin/collections`.
 
 ## Coding conventions
 
@@ -196,7 +243,7 @@ Schema: `supabase/migrations/20261102120000_init.sql`.
 | Table                                        | Notes                                                                                                                                                                                                                       |
 | -------------------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | `admins`                                     | `user_id` → `auth.users`, `name`, `role` (`owner`/`staff`). Managed in the SQL editor.                                                                                                                                      |
-| `categories`, `products`                     | Text slug PKs matching `data/catalog.ts`. `products.price/original_price/stock/active`.                                                                                                                                     |
+| `categories`, `products`                     | Text slug PKs (URL segments, immutable in the admin). `products.price/original_price/stock/active/is_new/bestseller/sort_order/specs jsonb`. Edited in `/admin/products` and `/admin/collections`.                          |
 | `orders`                                     | `order_number` (sequence), `status`, `payment_method`, `payment_status`, totals, customer fields (phone normalised to `03XXXXXXXXX`, email lower-case), `notes` (customer), `internal_notes`, `courier`, `tracking_number`. |
 | `order_items`                                | Snapshot of name/line/image/unit_price/original_price/qty at order time.                                                                                                                                                    |
 | `order_events`                               | History: `created`/`status`/`payment`/`shipping`, with `actor` (admin user id).                                                                                                                                             |
@@ -220,12 +267,28 @@ Enums: `order_status` (pending → confirmed → packed → shipped → delivere
 - Trigger `on_order_update` logs status/payment/shipping changes to `order_events` with
   `auth.uid()`, returns stock when an order is cancelled, and blocks reopening a cancelled order.
 - Error messages from the DB are mapped to copy by `friendlyDbError()` in `lib/orders.ts`.
+- **Catalogue editing** (`lib/actions/catalog.ts`: `saveProduct`, `deleteProduct`,
+  `saveCategory`, `deleteCategory`): `requireAdmin()` + session client, so the existing
+  `is_admin()` RLS policies on products/categories apply. Ids/slugs are validated with
+  `SLUG_PATTERN` and can't be changed after creation (URLs; past orders reference product ids).
+  Deleting a product is safe for history (`order_items.product_id` → null; the item keeps its
+  own name/price/photo). A collection can only be deleted when no product (hidden included)
+  uses it. Shared field rules live in `lib/admin/catalog-fields.ts` (client + server).
+- **Photos:** migration `20261103120000_catalog_images.sql` creates the public `catalog`
+  bucket (4 MB, jpeg/png/webp/avif) with admin-only insert/update/delete/select policies on
+  `storage.objects`. The server action uploads `image_file` to `products/<id>-<ts>.<ext>` or
+  `collections/<slug>-<ts>.<ext>` (new name per upload; old files are kept because past orders
+  point at them). `image` must be a bundled `/images/…` path or a URL in that bucket — next/image
+  only allows that host (`images.remotePatterns` in `next.config.ts`, built from
+  `NEXT_PUBLIC_SUPABASE_URL`). `serverActions.bodySizeLimit` is `4.4mb` (Vercel's body cap is
+  4.5 MB).
 
 **Auth:** Supabase email/password. Public sign-up must be disabled in the dashboard. Session
 cookies via `@supabase/ssr`; `proxy.ts` refreshes them on `/admin/*`. `getAdmin()` verifies with
 `auth.getUser()` and calls `connection()` first so admin pages are never prerendered.
 
-Fonts come from `next/font/google` (self-hosted at build). Images are local files.
+Fonts come from `next/font/google` (self-hosted at build). Images are local files
+(`public/images`) or admin uploads in Supabase Storage.
 
 ## Key design decisions
 
@@ -249,8 +312,8 @@ Fonts come from `next/font/google` (self-hosted at build). Images are local file
 
 ## Known gaps / next steps
 
-- Storefront still renders products from `data/catalog.ts`; the admin can't edit products yet.
-  Phase 4: read catalogue from Supabase (`'use cache'` + `cacheTag`, `updateTag` on admin edits)
-  and add product CRUD + image upload (Supabase Storage).
+- Admin catalogue editing is built but not yet exercised against the real project (needs the
+  storage migration run + the user's OK to create test data). Admin forms use native controls;
+  only one photo per product (no gallery yet).
 - No order notification emails yet (Resend planned). Admin sees orders in the portal.
 - PostgREST returns max 1000 rows per request: subscriber export/list need paging beyond that.

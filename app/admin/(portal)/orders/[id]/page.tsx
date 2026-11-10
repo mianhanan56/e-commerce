@@ -80,7 +80,7 @@ export default async function OrderDetailPage({ params }: PageProps<"/admin/orde
   const firstName = order.customer_name.split(" ")[0];
   const whatsapp = whatsappLink(
     order.phone,
-    `Assalam o Alaikum ${firstName}, this is WAQT confirming your order ${order.order_number} for ${formatPKR(order.total)}, to be delivered to ${order.city}. Please reply YES to confirm.`,
+    `Assalam o Alaikum ${firstName}, this is Zarvonique confirming your order ${order.order_number} for ${formatPKR(order.total)}, to be delivered to ${order.city}. Please reply YES to confirm.`,
   );
   const itemsTotal = order.subtotal + order.savings;
   const count = items.reduce((n, i) => n + i.qty, 0);

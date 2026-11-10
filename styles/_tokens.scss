@@ -15,6 +15,12 @@ $line: rgba(13, 13, 12, 0.12);
 $line-on-ink: rgba(255, 255, 255, 0.14);
 $sale: #8c2f23;
 
+// Logo artwork: gold gradient on near-black. The header uses these so it matches the logo.
+$brand-black: #0b0b0d;
+$brand-gold-light: #f4d790;
+$brand-gold: #d7b16b;
+$brand-gold-deep: #ae8339;
+
 // Type
 $font-serif: var(--font-serif), "Times New Roman", serif;
 $font-sans:
@@ -50,7 +56,10 @@ $space-10: 8rem;
 $section-y: clamp(4rem, 2.5rem + 6vw, 8rem);
 $gutter: clamp(1rem, 0.4rem + 2.6vw, 3rem);
 $container: 1360px;
-$header-h: 4.5rem;
+// The header holds the full stacked logo, so it is taller than a text-wordmark bar.
+$header-h: 5.25rem; // phones and tablets
+$header-h-lg: 6.5rem; // from lg
+$header-h-xl: 7.25rem; // from xl
 
 // Motion
 $ease: cubic-bezier(0.22, 0.61, 0.36, 1);

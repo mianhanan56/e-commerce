@@ -1,6 +1,6 @@
 @AGENTS.md
 
-# WAQT — Men's Watch Store
+# Zarvonique — Men's Watch Store
 
 Frontend-only Next.js 16 / React 19 / Sass storefront in its design phase. There is no
 backend. Dev server: `npm run dev` on **port 3002**. Checks: `npm run lint`,

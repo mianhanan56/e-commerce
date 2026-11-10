@@ -9,6 +9,7 @@ const links: { href: string; label: string; icon: IconName }[] = [
   { href: "/admin", label: "Dashboard", icon: "diamond" },
   { href: "/admin/orders", label: "Orders", icon: "bag" },
   { href: "/admin/products", label: "Products", icon: "clock" },
+  { href: "/admin/collections", label: "Collections", icon: "grid" },
   { href: "/admin/messages", label: "Messages", icon: "mail" },
   { href: "/admin/subscribers", label: "Subscribers", icon: "heart" },
 ];

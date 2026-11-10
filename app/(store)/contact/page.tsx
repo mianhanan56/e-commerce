@@ -10,16 +10,10 @@ import { faqs } from "@/data/help";
 
 export const metadata: Metadata = {
   title: "Contact",
-  description: "Visit the WAQT studio in Gulberg, Lahore, or reach us by phone, WhatsApp or email.",
+  description: "Reach Zarvonique by phone, WhatsApp or email, 24 hours a day, every day.",
 };
 
 const channels: { icon: IconName; label: string; value: string; href?: string; note?: string }[] = [
-  {
-    icon: "pin",
-    label: "Studio",
-    value: "Studio 4, MM Alam Road, Gulberg III, Lahore",
-    href: "https://maps.google.com/?q=MM+Alam+Road+Gulberg+III+Lahore",
-  },
   { icon: "phone", label: "Phone", value: "+92 300 000 0000", href: "tel:+923000000000" },
   {
     icon: "whatsapp",
@@ -28,8 +22,13 @@ const channels: { icon: IconName; label: string; value: string; href?: string; n
     href: "https://wa.me/923000000000",
     note: "Fastest — usually within the hour",
   },
-  { icon: "mail", label: "Email", value: "hello@waqt.pk", href: "mailto:hello@waqt.pk" },
-  { icon: "clock", label: "Hours", value: "Mon – Sat, 10am – 8pm", note: "Closed Sundays" },
+  {
+    icon: "mail",
+    label: "Email",
+    value: "zarvonique@gmail.com",
+    href: "mailto:zarvonique@gmail.com",
+  },
+  { icon: "clock", label: "Hours", value: "24 hours", note: "Monday – Sunday" },
 ];
 
 export default function ContactPage() {
@@ -42,7 +41,7 @@ export default function ContactPage() {
             Get in <em>touch</em>
           </>
         }
-        intro="Questions about a watch, an order or a gift? Our team in Lahore answers every message personally."
+        intro="Questions about a watch, an order or a gift? Our team answers every message personally, day or night."
         crumbs={[{ label: "Contact" }]}
       />
 

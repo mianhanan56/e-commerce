@@ -4,7 +4,7 @@ import { PageHeader } from "@/components/ui/PageHeader";
 
 export const metadata: Metadata = {
   title: "Track Your Order",
-  description: "Check the status of your WAQT order with your order number.",
+  description: "Check the status of your Zarvonique order with your order number.",
 };
 
 export default function TrackOrderPage() {
@@ -17,7 +17,7 @@ export default function TrackOrderPage() {
             Track your <em>order</em>
           </>
         }
-        intro="Enter the order number from your confirmation — it starts with WQ."
+        intro="Enter the order number from your confirmation — it starts with ZV."
         crumbs={[{ label: "Help", href: "/help/shipping" }, { label: "Track Your Order" }]}
       />
       <TrackOrder />

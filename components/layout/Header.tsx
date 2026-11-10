@@ -8,13 +8,12 @@ import { useCart } from "@/components/cart/CartContext";
 import { SearchDialog } from "@/components/search/SearchDialog";
 import { Icon } from "@/components/ui/Icon";
 import { useBodyLock } from "@/lib/useBodyLock";
-import { Wordmark } from "./Wordmark";
+import { Logo } from "./Logo";
 import styles from "./Header.module.scss";
 
 const nav = [
   { label: "Home", href: "/" },
   { label: "Shop", href: "/shop" },
-  { label: "Collections", href: "/collections" },
   { label: "About Us", href: "/about" },
   { label: "Contact", href: "/contact" },
 ];
@@ -91,8 +90,8 @@ export function Header() {
             </ul>
           </nav>
 
-          <Link href="/" className={styles.logo} aria-label="WAQT home">
-            <Wordmark />
+          <Link href="/" className={styles.logo} aria-label="Zarvonique Watches home">
+            <Logo layout="stacked" surface="dark" />
           </Link>
 
           <div className={styles.actions}>
@@ -136,7 +135,7 @@ export function Header() {
         inert={!open}
       >
         <div className={styles.drawerTop}>
-          <Wordmark tone="light" />
+          <Logo layout="stacked" surface="dark" />
           <button className={styles.iconButton} aria-label="Close menu" onClick={closeMenu}>
             <Icon name="close" />
           </button>

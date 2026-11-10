@@ -1,8 +1,20 @@
-# TODO — WAQT
+# TODO — Zarvonique
 
-_Last updated: 2026-11-03. Record finished tasks in `PROJECT_STATUS.md` before removing them._
+_Last updated: 2026-11-10. Record finished tasks in `PROJECT_STATUS.md` before removing them._
 
 ## High
+
+- [ ] **Restore the Supabase project.** Status: Blocked (user action). Since 2026-11-10 its
+      hostname returns NXDOMAIN. The store now falls back to the sample catalogue (no more
+      500s), but orders, tracking, forms and admin sign-in need the database. Restore or unpause
+      it in the Supabase dashboard. The real catalogue reappears within about a minute.
+- [ ] **Run the order-number prefix migration.** Status: Pending (user action).
+      `supabase/migrations/20261110120000_order_number_prefix.sql` in the SQL Editor once the
+      project is restored. Makes new orders `ZV-…`; code and placeholders already use `ZV`.
+- [ ] **About page studio section and warranty drop-off text.** Status: Pending (user decision).
+      Contact page/footer no longer show an address and hours are 24/7, but About still shows
+      "Visit the studio … MM Alam Road … Mon–Sat 10am–8pm" and the warranty page mentions the
+      Gulberg studio.
 
 - [ ] **Create and connect the Supabase project.** Status: In Progress (user action).
       2026-11-03: project created, `.env.local` written, migration + seed + admin user + `admins` row done; sign-up lock
@@ -13,15 +25,18 @@ _Last updated: 2026-11-03. Record finished tasks in `PROJECT_STATUS.md` before r
 - [ ] **Verify store + admin against real Supabase.** Status: Pending (after the above).
       Place an order, track it, sign in to `/admin`, change status/shipping/payment, cancel one
       (stock returns), messages, CSV export. Verified so far only against a local shim.
-- [ ] **Phase 4: products from the database + admin product editing.** Status: Pending.
-      Storefront reads catalogue from Supabase (`'use cache'` + `cacheTag`; admin actions call
-      `updateTag`). Admin: edit price/sale price/stock/active/specs, add products, image upload to
-      Supabase Storage. Until then `data/catalog.ts` and the `products` table must be kept in sync
-      by hand.
+- [ ] **Run the photo-storage migration and test catalogue editing on real Supabase.**
+      Status: Pending (user action / needs explicit OK for test writes). Run
+      `supabase/migrations/20261103120000_catalog_images.sql` in the SQL Editor, then in
+      `/admin`: add a test watch with a photo, edit it, hide it, delete it; add + delete an empty
+      collection; check the store updates at once. Code done and browser-checked read-only.
+- [ ] **Product photo gallery (several photos per watch).** Status: Pending. Today one `image`
+      per product; would need an `images text[]` column or a `product_images` table.
 - [ ] **Replace placeholder product and editorial photos.** Status: Pending.
       Some images in `public/images` show real brand logos (Rolex, MVMT, Fossil).
 - [ ] **Replace placeholder business details.** Status: Pending.
-      `waqt.pk` domain (`metadataBase` in `app/layout.tsx`), phone number, social links.
+      `zarvonique.com` placeholder domain (`metadataBase` in `app/layout.tsx`), phone number,
+      social links.
 
 ## Medium
 
@@ -32,7 +47,7 @@ _Last updated: 2026-11-03. Record finished tasks in `PROJECT_STATUS.md` before r
 - [ ] **Add a committed test setup.** Status: Pending. Candidates: SQL tests for the
       migration (PGlite worked well), unit tests for `lib/orders.ts`, Playwright e2e for checkout
       and admin. Needs the user's OK since project rules delete ad-hoc test files.
-- [ ] **Deep-link tracking from the confirmation page** (`/track-order?order=WQ-…`).
+- [ ] **Deep-link tracking from the confirmation page** (`/track-order?order=ZV-…`).
       Status: Pending. Needs `useSearchParams` under Suspense.
 
 ## Low

@@ -1,17 +1,20 @@
 @use "../../styles/tokens" as *;
 
+// Black like the logo artwork, so the logo sits on the background it was drawn for.
 .header {
   position: sticky;
   top: 0;
   z-index: 50;
-  background: rgba($paper, 0.96);
+  background: rgba($brand-black, 0.97);
   backdrop-filter: blur(10px);
+  color: rgba($white, 0.88);
+  border-top: 1px solid rgba($brand-gold, 0.16);
   border-bottom: 1px solid transparent;
   transition: border-color $dur $ease;
 }
 
 .scrolled {
-  border-bottom-color: $line;
+  border-bottom-color: rgba($brand-gold, 0.24);
 }
 
 .inner {
@@ -22,16 +25,34 @@
   height: $header-h;
 
   @include up(lg) {
-    height: 5.25rem;
+    height: $header-h-lg;
+  }
+
+  @include up(xl) {
+    height: $header-h-xl;
   }
 }
 
 .logo {
+  --logo-height: 4rem;
   grid-column: 2;
   grid-row: 1;
   justify-self: center;
+
+  @include up(sm) {
+    --logo-height: 4.25rem;
+  }
+
+  @include up(lg) {
+    --logo-height: 5.25rem;
+  }
+
+  @include up(xl) {
+    --logo-height: 6rem;
+  }
 }
 
+// Inline links from lg up; narrower screens use the drawer.
 .nav {
   display: none;
   grid-column: 1;
@@ -53,6 +74,7 @@
   font-weight: 500;
   letter-spacing: $tracking-wide;
   text-transform: uppercase;
+  white-space: nowrap;
   padding-block: $space-2;
 
   &::after {
@@ -75,8 +97,14 @@
     }
   }
 
+  @include hover {
+    &:hover {
+      color: $brand-gold-light;
+    }
+  }
+
   &[aria-current="page"] {
-    color: $gold-deep;
+    color: $brand-gold;
 
     &::after {
       transform: scaleX(1);
@@ -94,7 +122,7 @@
 
   @include hover {
     &:hover {
-      color: $gold-deep;
+      color: $brand-gold;
     }
   }
 }
@@ -143,8 +171,8 @@
   height: 1.05rem;
   padding: 0 0.25rem;
   border-radius: 999px;
-  background: $ink;
-  color: $paper;
+  background: $brand-gold;
+  color: $brand-black;
   font-size: 0.625rem;
   font-weight: 500;
   line-height: 1.05rem;
@@ -158,8 +186,8 @@
 @keyframes bump {
   40% {
     transform: scale(1.35);
-    background: $gold;
-    color: $ink;
+    background: $brand-gold-light;
+    color: $brand-black;
   }
 }
 
@@ -187,6 +215,7 @@
 }
 
 .drawerTop {
+  --logo-height: 4rem;
   display: flex;
   align-items: center;
   justify-content: space-between;

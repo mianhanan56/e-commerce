@@ -285,7 +285,7 @@ function Confirmation({ order }: { order: Placed }) {
       <p className={styles.confirmText}>
         We&apos;ve received your order for {count} {count === 1 ? "watch" : "watches"} (
         {formatPKR(order.total)}). Our team will call {order.customer.phone} to confirm, then it
-        ships to {order.customer.city} within 2–4 working days.
+        reaches {order.customer.city} within 5–7 working days.
         {order.payment === "cod"
           ? " Please keep the exact amount ready for the rider."
           : " Bank details are on their way to your email and WhatsApp."}

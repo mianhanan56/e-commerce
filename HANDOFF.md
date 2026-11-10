@@ -1,13 +1,13 @@
-# Handoff — WAQT Men's Watches
+# Handoff — Zarvonique Men's Watches
 
-_Last updated: 2026-11-03 (Supabase connected, pushed to `master`). Any coding agent should be able
+_Last updated: 2026-11-10 (Zarvonique logo, 5–7 day delivery copy; Supabase host not resolving). Any coding agent should be able
 to continue the project from this file. Read `ARCHITECTURE.md`, `PROJECT_STATUS.md` and
 `TODO.md` too. If the files disagree, trust them in this order: source code, ARCHITECTURE,
 PROJECT_STATUS, HANDOFF, TODO._
 
 ## Project overview
 
-WAQT is a premium men's watch store for Pakistan (PKR, cash on delivery, bank transfer) built
+Zarvonique is a premium men's watch store for Pakistan (PKR, cash on delivery, bank transfer) built
 with Next.js 16 / React 19 / Sass modules. One app contains the storefront and an **admin
 portal at `/admin`**. The backend is **Supabase** (Postgres + Auth). The storefront catalogue
 is still rendered from `data/catalog.ts`; orders, contact messages and newsletter sign-ups go
@@ -15,9 +15,11 @@ to Supabase.
 
 ## Current objective
 
-The Supabase project is connected and the owner admin signs in. Next: verify the full store +
-admin flow against real data (needs the user's OK — it writes test orders). After that: Phase 4 (products from the
-database + product editing in the admin) and order notification emails.
+The Supabase project is connected and the owner admin signs in. **Phase 4 is built
+(uncommitted):** the store reads products and collections from Supabase, and the admin can add,
+edit, hide and delete them with photo uploads. Next: the user runs the storage migration, then
+verify admin saves/uploads on the real project (needs the user's OK — it writes data). After
+that: order notification emails.
 
 ## Implementation status
 
@@ -52,6 +54,53 @@ database + product editing in the admin) and order notification emails.
 
 ## Important technical decisions
 
+- **No collection pages (user, 2026-11-10):** `/collections` and `/collections/[slug]` and
+  `components/collections/` were deleted, and "Collections" left the menu. A collection is the
+  shop filtered to it (`collectionHref()`); `next.config.ts` redirects old URLs (307). The admin
+  still manages collections (they are the shop's categories).
+- **Header matches the logo (user, 2026-11-10):** the user wants the logo exactly as supplied
+  (dial, ZARVONIQUE, — WATCHES —) and the colours managed around it, so the header is black with
+  the stacked logo in the artwork's gold. Don't go back to the cream header or the inline lockup.
+
+- **Logo (2026-11-10):** the user supplied a Zarvonique Watches logo (gold dial with a "Z" and
+  hand pivot, "ZARVONIQUE", "— WATCHES —") as a JPG. It was rebuilt as vectors:
+  `components/layout/logo-paths.ts` holds outlines generated from Cinzel Bold and Montserrat
+  Medium (both OFL), fitted to the JPG with under 0.2% of pixels differing. `Logo.tsx` takes
+  `layout` inline|stacked and `surface` light|dark. Light uses a deeper gold because the original
+  gold washes out on paper. Size it with `--logo-height` on the parent. To regenerate the paths,
+  use fontkit with the same fonts. Don't hand-edit them.
+- **Brand is Zarvonique everywhere (user, 2026-11-10):** the old name was removed from titles,
+  metadata, copy, help pages, admin, CSV filename, README and CLAUDE.md. localStorage keys are
+  now `zarvonique:cart` / `zarvonique:wishlist` (old keys are ignored; dev-only data was lost).
+  Placeholder domain `zarvonique.com` in `metadataBase`. Order numbers: new orders get `ZV-…` once
+  the user runs `supabase/migrations/20261110120000_order_number_prefix.sql` in the SQL Editor
+  (not run yet: the project was offline and agents don't write to the DB). Until then the DB still
+  issues the old prefix. Existing orders keep their numbers. Placeholders show `ZV-123456`.
+- **Contact details (user, 2026-11-10):** email `zarvonique@gmail.com`, hours "24 hours, Monday –
+  Sunday", no studio address on the contact page or in the footer. The About page still has a
+  "Visit the studio" section with the MM Alam Road address and Mon–Sat 10am–8pm hours, and
+  `data/help.ts` (warranty) mentions dropping watches at the Gulberg studio. Ask the user before
+  changing those.
+- **Home page (user, 2026-11-10):** Hero, Benefits, FeaturedWatches, WhyChooseUs. Removed:
+  "The Signature Collection", "Shop by Category", "The Edit" banner and the newsletter
+  ("Stay Ahead of Time"); their components are deleted. `FeaturedWatches` shows the first 8
+  watches in the shop's default order ("Our Watches" + "View All Watches"). The user doesn't
+  want the word "collection" in the store: hero, product eyebrow, search ("Categories"), cart
+  and About copy were reworded. The admin still says Collections. Newsletter sign-up now has no
+  form on the site; `subscribeNewsletter` and the admin subscriber list remain.
+
+- **Catalogue (2026-11-03):** `lib/catalog.ts` `getCatalog()` (`'use cache'`, tag `catalog`,
+  `cacheLife("hours")`) is the only source for store pages; client components use
+  `useCatalog()` from `StoreShell`'s `CatalogProvider`. Never import `sampleProducts` in store
+  code — it's the offline fallback only. Admin actions (`lib/actions/catalog.ts`) call
+  `updateTag("catalog")`; orders/cancels use `revalidateTag("catalog", "max")`.
+- Product ids / collection slugs are immutable after creation (URLs; order_items reference
+  product ids). "new" is reserved (admin `new/` routes).
+- Photo uploads go through the server action (FormData `image_file`), not a browser Supabase
+  client. 4 MB cap because Vercel limits request bodies to 4.5 MB.
+- Admin forms submit via `onSubmit` + `startTransition` (not `<form action>`) so React doesn't
+  reset the form on a failed save. `ImageField` gets `key={imageUrl}` to clear after save.
+
 - **Next.js 16 is newer than most training data.** Read `node_modules/next/dist/docs/` before
   touching routing, caching or data APIs. `cacheComponents` and `partialPrefetching` are on.
   `middleware` is now `proxy.ts`. `params`/`searchParams` are Promises.
@@ -74,6 +123,10 @@ database + product editing in the admin) and order notification emails.
 - `<html>` in `app/layout.tsx` has `suppressHydrationWarning` (2026-11-03): a browser extension
   added `style="filter: none"` before hydration. It only covers `<html>`'s own attributes —
   don't add it deeper; a mismatch inside `<body>` is a real bug.
+- next/image's dev LCP warning keys images by URL, last render wins: if a placeholder product
+  reuses a category photo, a lazy card copy makes an eager hero look lazy. That's why the
+  collection page grid is fully eager. Re-check with real product photos (see ARCHITECTURE.md
+  → Styling conventions → Images).
 
 ## Environment setup
 
@@ -104,9 +157,12 @@ database + product editing in the admin) and order notification emails.
 
 ## Known bugs and limitations
 
-- Storefront products come from `data/catalog.ts`; editing prices/stock in Supabase affects
-  checkout totals and stock but not what the product pages display. Keep them in sync until
-  Phase 4.
+- Catalogue edits made in the Supabase Table Editor (not the admin) reach the store within an
+  hour (`cacheLife("hours")`); admin edits are immediate.
+- Photo upload needs `supabase/migrations/20261103120000_catalog_images.sql` (not run yet as of
+  2026-11-03); until then saving with a new photo shows "Photo storage isn't set up yet…".
+- `/products/<unknown>` renders the 404 page with status 200 (streamed under `loading.tsx`) plus
+  `noindex`: existing PPR behaviour, not new.
 - No email/WhatsApp notification on new orders yet — the owner must check `/admin`.
 - Subscriber list/export is capped at 1000 rows (PostgREST default max rows).
 - Placeholder photos include real brand logos; domain, phone and social links are placeholders.
@@ -139,6 +195,15 @@ database + product editing in the admin) and order notification emails.
 
 ## Current blockers
 
+- **2026-11-10: the Supabase project host doesn't resolve** (`yvzfpgnxqcabdgvmivyr.supabase.co`
+  → NXDOMAIN), so every store page throws "Couldn't load the catalogue: TypeError: fetch failed"
+  from `lib/catalog.ts`. The project is most likely paused (free tier pauses when idle) or deleted.
+  The user must restore it in the Supabase dashboard. Agents must not touch it.
+  **Mitigated in code:** `getCatalog()` now falls back to the sample catalogue when Supabase is
+  unreachable, so store pages return 200 (verified on :3002). Orders, tracking, contact,
+  newsletter and admin sign-in still need the database and show their error messages until it
+  is back.
+
 - **User must disable public sign-ups** in the Supabase dashboard (project, schema, seed and
   admin user are done). Agents must not modify databases without explicit instruction.
 - Decisions still open: notification channel (email / Telegram / WhatsApp), staff accounts and
@@ -146,11 +211,10 @@ database + product editing in the admin) and order notification emails.
 
 ## Recommended next step
 
-1. With the user's OK: place a test order on the store and walk the admin flow on the real
-   project. Fix anything that differs from the shim.
-2. Phase 4: storefront reads products from Supabase (`'use cache'` + `cacheTag`, `updateTag`
-   from admin actions), admin product editing + image upload (Supabase Storage).
-3. Order emails (Resend) once a domain exists.
+1. User runs `supabase/migrations/20261103120000_catalog_images.sql` in the SQL Editor.
+2. With the user's OK: on the real project, add/edit/hide/delete a test watch with a photo,
+   add/delete an empty collection, place + cancel a test order. Fix anything that differs.
+3. Order emails (Resend) once a domain exists. Optional: multi-photo gallery per watch.
 
 ## Rules for agents (from the project owner)
 
