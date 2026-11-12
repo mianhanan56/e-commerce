@@ -2,6 +2,7 @@
 
 .layout {
   display: grid;
+  grid-template-columns: minmax(0, 1fr);
   gap: $space-7;
 
   @include up(lg) {
@@ -24,7 +25,8 @@
 
   @include up(lg) {
     position: sticky;
-    top: 6.5rem;
+    // Clear of the sticky header (was 6.5rem, which slid 12px under the taller xl header).
+    top: calc(#{$header-h-xl} + #{$space-5});
   }
 }
 
@@ -168,8 +170,13 @@
   justify-content: center;
   gap: $space-2;
   min-height: 3.25rem;
-  padding: 0 $space-5;
+  // Tighter on the narrowest phones so the row fits in 320px.
+  padding: 0 $space-3;
   background: $ink;
+
+  @include up(sm) {
+    padding: 0 $space-5;
+  }
   color: $paper;
   font-size: $text-xs;
   font-weight: 500;

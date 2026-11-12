@@ -147,14 +147,6 @@
   margin-right: -0.6rem;
 }
 
-.search {
-  display: none;
-
-  @include up(sm) {
-    display: inline-grid;
-  }
-}
-
 .wishlist {
   display: none;
 

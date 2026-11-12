@@ -1,6 +1,6 @@
 # Project Status — Zarvonique
 
-_Last updated: 2026-11-11_
+_Last updated: 2026-11-12_
 
 ## Current milestone
 
@@ -90,6 +90,20 @@ order notifications, placeholder content, tests, deploy configuration.
   Secret) variables, then a redeploy.
 
 ## Recent progress
+
+- 2026-11-12: **Design review of the whole storefront** (headless Chrome on :3002, sample
+  catalogue; 13 pages at 320/390/768/1024/1440px plus bag, checkout, menu drawer, search).
+  Fixed: (1) `/help/*` scrolled sideways on phones by up to 676px (topic chips and tables
+  stretched the grid column) → `minmax(0, 1fr)` in `Help.module.scss`; (2) product page scrolled
+  sideways 4px at 320px (buy row) → same grid fix + tighter Add to Bag padding below `sm`;
+  (3) product photo's sticky offset slid 12px under the `xl` header → uses `$header-h-xl`;
+  (4) dev error "params accessed outside Suspense" on `/shop/[category]` → added `loading.tsx`
+  (same pattern as products/help); (5) mobile home hero photo is now 5:4 (was 4:5) with tighter
+  spacing so the headline and first button are on the first screen; (6) search icon now shows in
+  the header on every screen size (was hidden under 480px, only reachable through the menu);
+  (7) keyboard focus ring is 2px `$gold-deep` (1px light gold was hard to see on cream).
+  After: no horizontal overflow and no console errors on any page/width; tsc, lint, prettier
+  pass. `next build` not re-run (dev server was running).
 
 - 2026-11-11: SEO work (see Completed). Checked on a production build (`next start -p 3002`,
   sample catalogue because Supabase is unreachable): robots/sitemap content; title, description,

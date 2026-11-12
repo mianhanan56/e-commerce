@@ -1,6 +1,6 @@
 # Handoff — Zarvonique Men's Watches
 
-_Last updated: 2026-11-11 (SEO foundations + /shop/<category> pages; Supabase host not resolving). Any coding agent should be able
+_Last updated: 2026-11-12 (design review fixes; SEO foundations; Supabase host not resolving). Any coding agent should be able
 to continue the project from this file. Read `ARCHITECTURE.md`, `PROJECT_STATUS.md` and
 `TODO.md` too. If the files disagree, trust them in this order: source code, ARCHITECTURE,
 PROJECT_STATUS, HANDOFF, TODO._
@@ -51,6 +51,12 @@ that: order notification emails.
     cookies/JWT verification and PostgREST behaviour may differ from the shim.
 - Without `.env.local`, the store shows "Online ordering isn't connected yet…" on checkout /
   contact / newsletter / tracking, and `/admin/*` redirects to a login page that explains setup.
+
+- **Design review (2026-11-12, uncommitted):** whole storefront checked at 320–1440px. Seven
+  fixes (mobile sideways scroll on help + product pages, product photo sticky offset,
+  `/shop/[category]` `loading.tsx`, shorter mobile hero photo, search icon in the phone header,
+  stronger focus ring); details in PROJECT_STATUS "Recent progress". Ideas not built are in
+  TODO (Medium/Low, "Design:").
 
 ## Important technical decisions
 

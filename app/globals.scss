@@ -73,7 +73,8 @@ img {
 }
 
 :focus-visible {
-  outline: 1px solid $gold;
+  // 2px in the deeper gold: the old 1px light gold was barely visible on the cream background.
+  outline: 2px solid $gold-deep;
   outline-offset: 3px;
 }
 

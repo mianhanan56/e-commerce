@@ -19,7 +19,8 @@
 
 .media {
   position: relative;
-  aspect-ratio: 4 / 5;
+  // Short on phones so the headline and the first button land on the first screen.
+  aspect-ratio: 5 / 4;
   overflow: hidden;
 
   @include up(md) {
@@ -64,7 +65,11 @@
   display: flex;
   flex-direction: column;
   justify-content: center;
-  padding: $space-7 $gutter $space-8;
+  padding: $space-6 $gutter $space-8;
+
+  @include up(md) {
+    padding-top: $space-7;
+  }
 
   @include up(lg) {
     padding: $space-9 $space-8 $space-8 max($gutter, calc((100vw - #{$container}) / 2 + #{$gutter}));
@@ -109,21 +114,30 @@
 
 .lede {
   max-width: 28rem;
-  margin-top: $space-6;
-  font-size: $text-md;
+  margin-top: $space-5;
+  font-size: $text-base;
   font-weight: 300;
   color: $muted-on-ink;
+
+  @include up(md) {
+    margin-top: $space-6;
+    font-size: $text-md;
+  }
 }
 
 .ctas {
   display: flex;
   flex-direction: column;
   gap: $space-3;
-  margin-top: $space-7;
+  margin-top: $space-6;
 
   @include up(sm) {
     flex-direction: row;
     flex-wrap: wrap;
+  }
+
+  @include up(md) {
+    margin-top: $space-7;
   }
 }
 

@@ -3,6 +3,9 @@
 .layout {
   @include container;
   display: grid;
+  // minmax(0, …): without it the topic chips and wide tables stretch the column and the whole
+  // page scrolls sideways on phones.
+  grid-template-columns: minmax(0, 1fr);
   gap: $space-7;
   padding-block: $space-7 $section-y;
 

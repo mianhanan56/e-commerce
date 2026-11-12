@@ -1,6 +1,6 @@
 # Architecture — Zarvonique Men's Watches
 
-_Last updated: 2026-11-11 (SEO: metadata helper, JSON-LD, sitemap/robots, /shop/[category])_
+_Last updated: 2026-11-12 (design review fixes: mobile overflow, hero, header search, focus ring)_
 
 ## Overview
 
@@ -245,6 +245,16 @@ database sequence.
   gold. Heights: `$header-h` 5.25rem, `$header-h-lg` 6.5rem, `$header-h-xl` 7.25rem; sticky
   sidebars (cart, checkout, help) and the home/about heroes use these tokens. Four nav links
   (Home, Shop, About Us, Contact) show inline from `lg`; below that the drawer is used.
+  Header icons: search and bag on every width, wishlist from `md` (also in the drawer).
+- Single-column mobile grids that hold a scrolling row or a wide child (help layout, product
+  layout) declare `grid-template-columns: minmax(0, 1fr)`. An implicit `auto` column grows to
+  the child's min-content and makes the page scroll sideways (found 2026-11-12).
+- Focus ring: global `:focus-visible` is 2px `$gold-deep`, offset 3px (`app/globals.scss`).
+- Dynamic store routes (`products/[id]`, `help/[slug]`, `shop/[category]`) each have a
+  `loading.tsx` (`PageLoading`); without one, awaiting `params` in the page triggers Next's
+  "instant navigation" dev error.
+- Home hero photo: 5:4 below `md` (headline + first CTA on the first phone screen), 16:11 from
+  `md`, full-height column from `lg`.
 - Logo: `<Logo />` sizes from `--logo-height` set by the parent (header 4–6rem stacked, drawer
   4rem stacked, footer 10.5rem stacked, login 9rem stacked, admin sidebar 1.875rem inline).
   `surface="dark"` is the artwork's gold; `light` is a deeper gold for cream/white. Gradient ids

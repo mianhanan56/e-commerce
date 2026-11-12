@@ -96,7 +96,7 @@ export function Header() {
 
           <div className={styles.actions}>
             <button
-              className={`${styles.iconButton} ${styles.search}`}
+              className={styles.iconButton}
               aria-label="Search"
               onClick={() => setSearchOpen(true)}
             >

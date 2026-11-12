@@ -1,6 +1,6 @@
 # TODO — Zarvonique
 
-_Last updated: 2026-11-11. Record finished tasks in `PROJECT_STATUS.md` before removing them._
+_Last updated: 2026-11-12. Record finished tasks in `PROJECT_STATUS.md` before removing them._
 
 ## High
 
@@ -61,7 +61,17 @@ _Last updated: 2026-11-11. Record finished tasks in `PROJECT_STATUS.md` before r
 - [ ] **Deep-link tracking from the confirmation page** (`/track-order?order=ZV-…`).
       Status: Pending. Needs `useSearchParams` under Suspense.
 
+- [ ] **Design: sticky "Add to Bag" bar on the phone product page.** Status: Pending (user
+      decision). On phones the button scrolls away under the specs; a slim fixed bar with price
+      + button would keep it in reach. Found in the 2026-11-12 design review.
+
 ## Low
+
+- [ ] **Design: announcement bar wraps to two lines at 320px.** Status: Pending. Shorten the
+      text or reduce letter-spacing below `sm`.
+- [ ] **Design: home page is short** (hero, benefits, 8 watches, why choose us). Status: Pending
+      (user decision; the user removed the other sections on 2026-11-10). Real customer reviews
+      would be the most useful addition once they exist.
 
 - [ ] **SEO content.** Status: Pending. Longer product copy, customer reviews (then
       `aggregateRating` in Product JSON-LD), guides ("best watches under Rs 20,000", case-size
